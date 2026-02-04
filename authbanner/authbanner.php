@@ -3,7 +3,8 @@
  * Name: Authbanner
  * Description: Displays the profile banner for logged-in users (without the ability to upload your own banner). Based on the addon Coverphoto by Random Penguin and the modified addon by feb.
  * Version: 1.0
- * Author: Jools
+ * Author: Jools <https://friendica.de/profile/jools>
+ *
  */
 
 use Friendica\Core\Hook;
