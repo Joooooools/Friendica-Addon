@@ -1,16 +1,17 @@
-<div class="generic-content-wrapper realmember-dashboard">
-    <div class="section-title-wrapper">
-        <div class="realmember-header">
-            <h2>✨ {{$title}}</h2>
-            <div class="realmember-stats">Analysierte Konten: {{$total}}</div>
+<div class="generic-content-wrapper realmember-dashboard panel panel-default">
+    <div class="panel-body">
+        <div class="section-title-wrapper">
+            <div class="realmember-header">
+                <h2>✨ {{$title}}</h2>
+                <div class="realmember-stats">Analysierte Konten: {{$total}}</div>
+            </div>
         </div>
-    </div>
 
-    <div class="realmember-header-notice">
-        <div class="alert alert-warning">
-            ℹ️ RealMember ist ein <strong>automatisiertes Assistenz-System</strong> basierend auf Heuristiken. Ein hoher Risiko-Score ist ein starkes Indiz, aber kein Beweis. Die endgültige Entscheidung über ein Konto sollte <strong>immer</strong> manuell erfolgen.
+        <div class="realmember-header-notice">
+            <div class="alert alert-warning">
+                ℹ️ RealMember ist ein <strong>automatisiertes Assistenz-System</strong> basierend auf Heuristiken. Ein hoher Risiko-Score ist ein starkes Indiz, aber kein Beweis. Die endgültige Entscheidung über ein Konto sollte <strong>immer</strong> manuell erfolgen.
+            </div>
         </div>
-    </div>
 
     <div class="realmember-filters">
         <div class="filter-tabs">
@@ -281,5 +282,6 @@
 
     <div class="realmember-footer">
         <small>🤖 Dieses Addon wurde mit Unterstützung von KI (Claude / Gemini) entwickelt.</small>
+    </div>
     </div>
 </div>
