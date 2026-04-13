@@ -1,0 +1,52 @@
+/**
+ * PersonalPostExporter Settings Styles
+ *
+ * These styles are for the Friendica Backend UI.
+ * We rely on standard Bootstrap classes (alert, well) for core styling
+ * to ensure compatibility with all themes (light/dark/images).
+ */
+
+.ppex-settings-intro {
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+/* We use .alert.alert-warning and .alert.alert-info in the template,
+   so we only need minor spacing adjustments here if any. */
+
+.ppex-info-list {
+    padding-left: 20px;
+    margin-top: 15px;
+    margin-bottom: 0;
+    list-style-type: disc;
+}
+
+.ppex-info-list li {
+    margin-bottom: 10px;
+}
+
+/* Member Since Status - Using a more robust, theme-agnostic style */
+.ppex-status-bar {
+    padding: 10px 15px;
+    border-radius: 4px;
+    border: 1px solid var(--border, #ccc);
+    background-color: var(--background-container, rgba(var(--border-rgb, 0,0,0), 0.1));
+    margin-bottom: 25px;
+    display: inline-block;
+}
+
+/* Ensure strong text inside status bar is legible */
+.ppex-status-bar strong {
+    color: var(--accent, inherit);
+}
+
+.ppex-settings-fields {
+    margin-top: 25px;
+}
+
+/* Reset any specific card styles that might still be in the template */
+.ppex-warning-card, .ppex-info-card {
+    border: none;
+    background: transparent;
+    padding: 0;
+}

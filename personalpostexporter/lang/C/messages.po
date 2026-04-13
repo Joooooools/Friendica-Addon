@@ -1,0 +1,312 @@
+# ADDON personalpostexporter
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: PersonalPostExporter\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+
+#: personalpostexporter.php
+msgid "Personal Post Exporter"
+msgstr "Personal Post Exporter"
+
+#: personalpostexporter.php
+msgid "With this exporter, you can download your own archive from your Friendica instance. You will receive a ZIP file containing your posts arranged in a blog-like style. A search function is also included."
+msgstr "With this exporter, you can download your own archive from your Friendica instance. You will receive a ZIP file containing your posts arranged in a blog-like style. A search function is also included."
+
+#: personalpostexporter.php
+msgid "IMPORTANT:"
+msgstr "IMPORTANT:"
+
+#: personalpostexporter.php
+msgid "This archive is for viewing and searching only. It is not a technical backup and cannot be used to re-import your posts into another Friendica instance if you move your account."
+msgstr "This archive is for viewing and searching only. It is not a technical backup and cannot be used to re-import your posts into another Friendica instance if you move your account."
+
+#: personalpostexporter.php
+msgid "Important information about your export:"
+msgstr "Important information about your export:"
+
+#: personalpostexporter.php
+msgid "What is exported?"
+msgstr "What is exported?"
+
+#: personalpostexporter.php
+msgid "Your posts (your wall), including your private posts."
+msgstr "Your posts (your wall), including your private posts."
+
+#: personalpostexporter.php
+msgid "private posts"
+msgstr "private posts"
+
+#: personalpostexporter.php
+msgid "What is excluded?"
+msgstr "What is excluded?"
+
+#: personalpostexporter.php
+msgid "Comments, likes, shares, and other social interactions are"
+msgstr "Comments, likes, shares, and other social interactions are"
+
+#: personalpostexporter.php
+msgid "not"
+msgstr "not"
+
+#: personalpostexporter.php
+msgid "included in the export."
+msgstr "included in the export."
+
+#: personalpostexporter.php
+msgid "Privacy:"
+msgstr "Privacy:"
+
+#: personalpostexporter.php
+msgid "Private posts are clearly marked in your archive with a lock icon (🔒)."
+msgstr "Private posts are clearly marked in your archive with a lock icon (🔒)."
+
+#: personalpostexporter.php
+msgid "Image Warning:"
+msgstr "Image Warning:"
+
+#: personalpostexporter.php
+msgid "Images are"
+msgstr "Images are"
+
+#: personalpostexporter.php
+msgid "NEVER"
+msgstr "NEVER"
+
+#: personalpostexporter.php
+msgid "bundled into the ZIP file. They remain on the server and are only linked."
+msgstr "bundled into the ZIP file. They remain on the server and are only linked."
+
+#: personalpostexporter.php
+msgid "How to use?"
+msgstr "How to use?"
+
+#: personalpostexporter.php
+msgid "Unzip the file and open"
+msgstr "Unzip the file and open"
+
+#: personalpostexporter.php
+msgid "with a double-click. Any web browser works."
+msgstr "with a double-click. Any web browser works."
+
+#: personalpostexporter.php
+msgid "System Busy:"
+msgstr "System Busy:"
+
+#: personalpostexporter.php
+msgid "Member since:"
+msgstr "Member since:"
+
+#: personalpostexporter.php
+msgid "Maximum number of concurrent exports reached. Please wait about 20 minutes."
+msgstr "Maximum number of concurrent exports reached. Please wait about 20 minutes."
+
+#: personalpostexporter.php
+msgid "System busy. Please try again later."
+msgstr "System busy. Please try again later."
+
+#: personalpostexporter.php
+msgid "No posts found for the selected period."
+msgstr "No posts found for the selected period."
+
+#: personalpostexporter.php
+msgid "Image Display"
+msgstr "Image Display"
+
+#: personalpostexporter.php
+msgid "Choose display style. Images are <strong>NOT</strong> bundled into the ZIP file!"
+msgstr "Choose display style. Images are <strong>NOT</strong> bundled into the ZIP file!"
+
+#: personalpostexporter.php
+msgid "Display images directly (Load from server)"
+msgstr "Display images directly (Load from server)"
+
+#: personalpostexporter.php
+msgid "Links only (Show placeholders)"
+msgstr "Links only (Show placeholders)"
+
+#: personalpostexporter.php
+msgid "Archive Theme"
+msgstr "Archive Theme"
+
+#: personalpostexporter.php
+msgid "Select the visual style for your archive."
+msgstr "Select the visual style for your archive."
+
+#: personalpostexporter.php
+msgid "Light"
+msgstr "Light"
+
+#: personalpostexporter.php
+msgid "Dark"
+msgstr "Dark"
+
+#: personalpostexporter.php
+msgid "Export Period"
+msgstr "Export Period"
+
+#: personalpostexporter.php
+msgid "Select the time range for your export."
+msgstr "Select the time range for your export."
+
+#: personalpostexporter.php
+msgid "All Time"
+msgstr "All Time"
+
+#: personalpostexporter.php
+msgid "Older than 10 years"
+msgstr "Older than 10 years"
+
+#: personalpostexporter.php
+msgid "Start Export"
+msgstr "Start Export"
+
+#: src/Exporter.php
+msgid "Access denied."
+msgstr "Access denied."
+
+#: src/Exporter.php
+msgid "User not found."
+msgstr "User not found."
+
+#: src/Exporter.php
+msgid "Could not identify user contact."
+msgstr "Could not identify user contact."
+
+#: src/Exporter.php
+msgid "Search archive..."
+msgstr "Search archive..."
+
+#: src/Exporter.php
+msgid "Welcome to your Archive"
+msgstr "Welcome to your Archive"
+
+#: src/Exporter.php
+msgid "Select a month from the sidebar to start browsing."
+msgstr "Select a month from the sidebar to start browsing."
+
+#: src/Exporter.php
+msgid "Results for"
+msgstr "Results for"
+
+#: src/Exporter.php
+msgid "Clear Search"
+msgstr "Clear Search"
+
+#: src/Exporter.php
+msgid "No results for"
+msgstr "No results for"
+
+#: src/Exporter.php
+msgid "Next"
+msgstr "Next"
+
+#: src/Exporter.php
+msgid "Previous"
+msgstr "Previous"
+
+#: src/Exporter.php
+msgid "Page %d of %d"
+msgstr "Page %d of %d"
+
+#: src/Exporter.php
+msgid "🔍 Meta Information"
+msgstr "🔍 Meta Information"
+
+#: src/Exporter.php
+msgid "PUBLISHED"
+msgstr "PUBLISHED"
+
+#: src/Exporter.php
+msgid "ORIGINAL SOURCE"
+msgstr "ORIGINAL SOURCE"
+
+#: src/Exporter.php
+msgid "View on Friendica ↗"
+msgstr "View on Friendica ↗"
+
+#: src/Exporter.php
+msgid "🔗 View Original Post"
+msgstr "🔗 View Original Post"
+
+#: src/Exporter.php
+msgid "📷 Gallery"
+msgstr "📷 Gallery"
+
+#: src/Exporter.php
+msgid "Image description"
+msgstr "Image description"
+
+#: src/Exporter.php
+msgid "📸 View original"
+msgstr "📸 View original"
+
+#: src/Exporter.php
+msgid "Memory limit reached."
+msgstr "Memory limit reached."
+
+#: src/Exporter.php
+msgid "Server busy. Please try again in 20 minutes."
+msgstr "Server busy. Please try again in 20 minutes."
+
+#: src/Exporter.php
+msgid "January"
+msgstr "January"
+
+#: src/Exporter.php
+msgid "February"
+msgstr "February"
+
+#: src/Exporter.php
+msgid "March"
+msgstr "March"
+
+#: src/Exporter.php
+msgid "April"
+msgstr "April"
+
+#: src/Exporter.php
+msgid "May"
+msgstr "May"
+
+#: src/Exporter.php
+msgid "June"
+msgstr "June"
+
+#: src/Exporter.php
+msgid "July"
+msgstr "July"
+
+#: src/Exporter.php
+msgid "August"
+msgstr "August"
+
+#: src/Exporter.php
+msgid "September"
+msgstr "September"
+
+#: src/Exporter.php
+msgid "October"
+msgstr "October"
+
+#: src/Exporter.php
+msgid "November"
+msgstr "November"
+
+#: src/Exporter.php
+msgid "December"
+msgstr "December"
+
+#: personalpostexporter.php
+msgid "Y-m-d"
+msgstr "Y-m-d"
+
+#: src/Exporter.php
+msgid "Could not create temporary file. Disk full?"
+msgstr "Could not create temporary file. Disk full?"
+
+#: personalpostexporter.php
+msgid "Please leave this window open during the export. For very large archives, the process might timeout; in that case, please try exporting year by year. Once you click the button, please wait a moment for the process to start."
+msgstr "Please leave this window open during the export. For very large archives, the process might timeout; in that case, please try exporting year by year. Once you click the button, please wait a moment for the process to start."
