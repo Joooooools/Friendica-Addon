@@ -45,3 +45,5 @@ Dieses Addon wurde mit Gemini / AI Studio und Claude erstellt.
 ## Lizenz
 
 Dieses Projekt ist unter der **AGPL-3.0-or-later** lizenziert.
+
+Weitere Infos dazu auf [friendica.dev](https://friendica.dev/friendica-addon-personalpostexporter-eigene-posts-als-blog-archiv-exportieren/).
