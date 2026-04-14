@@ -29,21 +29,6 @@ PersonalPostExporter ist ein Addon für Friendica. Es ermöglicht Nutzern, ihre 
 -   **Ausschlüsse:** Kommentare, Likes, Shares (geteilte Inhalte Dritter) und andere soziale Interaktionen sind nicht Teil des Exports.
 
 
-## Installation
-
-1.  Navigiere in das Addon-Verzeichnis deiner Friendica-Installation.
-
-2.  Klone dieses Repository oder kopiere die Dateien in einen Ordner namens personalpostexporter:
-
-
-
-    ```
-    git clone https://github.com/IhrUsername/personalpostexporter.git personalpostexporter
-    ```
-
-3.  Aktiviere das Addon im Administrationsbereich von Friendica unter **Administration -> Konfiguration -> Addons**.
-
-
 ## Anforderungen
 
 -   **Friendica:** Aktuelle Version.
@@ -56,6 +41,10 @@ PersonalPostExporter ist ein Addon für Friendica. Es ermöglicht Nutzern, ihre 
 ## Benutzung
 
 Nach der Aktivierung finden Nutzer in ihren **Einstellungen** unter **Zusatz-Einstellungen** den Punkt **Personal Post Exporter**. Dort kann der Zeitraum, das Design und die Art der Bilddarstellung gewählt werden.
+
+## Anmerkung
+
+Dieses Addon wurde mit Gemini / AI Studio und Claude erstellt.
 
 ## Lizenz
 
