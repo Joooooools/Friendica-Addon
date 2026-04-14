@@ -40,7 +40,7 @@ PersonalPostExporter ist ein Addon für Friendica. Es ermöglicht Nutzern, ihre 
 
 ## Anmerkung
 
-Dieses Addon wurde mit Gemini / AI Studio und Clau
+Dieses Addon wurde mit Gemini / AI Studio und Claude erstellt.
 
 ## Lizenz
 
