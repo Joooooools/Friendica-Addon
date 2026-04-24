@@ -1,0 +1,92 @@
+/* EasyPhoto - Adds a simple image description editor below the post textarea for easier accessibility. */
+
+.ep-list {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-family: sans-serif;
+}
+
+.ep-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    margin-bottom: 8px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.ep-thumb-container {
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    overflow: hidden;
+    border-radius: 4px;
+    background: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ep-thumb {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
+
+.ep-input-container {
+    flex-grow: 1;
+}
+
+.ep-input-container label {
+    display: block;
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 3px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.ep-input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.ep-input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+}
+
+/* Dark Mode support */
+@media (prefers-color-scheme: dark) {
+    .ep-list {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .ep-row {
+        background: #444;
+        border-color: rgba(255, 255, 255, 0.1);
+        color: #eee;
+    }
+
+    .ep-input {
+        background: #333;
+        color: #fff;
+        border-color: #444;
+    }
+
+    .ep-thumb-container {
+        background: #444;
+    }
+}
