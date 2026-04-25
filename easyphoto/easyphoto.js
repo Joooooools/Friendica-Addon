@@ -2,7 +2,7 @@
  * EasyPhoto - Adds a simple image description editor below the post textarea for easier accessibility.
  * Author: Jools <https://friendica.de/profile/jools>
  * License: AGPL-3.0-or-later
- * 
+ *
  * SPDX-FileCopyrightText: 2026 [Jools]
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
@@ -11,64 +11,84 @@
     // Stabiler Counter für eindeutige Input-IDs – kein Date.now(), kein Kollisionsrisiko
     let _epIdCounter = 0;
 
+    // ReDoS-Schutz: Inputs über dieser Größe werden nicht mehr geparst.
+    // Friendica-Posts sind typischerweise < 10k Zeichen; 100k ist ein großzügiger Sicherheitspuffer.
+    const MAX_PARSE_LENGTH = 100000;
+
+    // WeakMap für State-Speicherung pro Textarea – saubere Isolation,
+    // keine Kollisionen mit anderen Addons, automatische Garbage Collection.
+    const stateMap = new WeakMap();
+
     const findImages = (text) => {
+        // Defensive: zu lange Inputs nicht parsen (ReDoS-Schutz, tempered greedy tokens)
+        if (typeof text !== 'string' || text.length > MAX_PARSE_LENGTH) {
+            return [];
+        }
+
         const results = [];
         const counts = {};
 
-        // Pattern 1: Komplex (verlinkt) [url=...][img=...]...[/img][/url]
-        const pattern1 = /\[url=([^\]]*?)\]\[img=([^\]]*?)\]((?:(?!\[url=|\[img).)*?)\[\/img\]\[\/url\]/gi;
-        let match;
-        while ((match = pattern1.exec(text)) !== null) {
-            const imgUrl = match[2];
-            counts[imgUrl] = (counts[imgUrl] || 0) + 1;
+        try {
+            // Pattern 1: Komplex (verlinkt) [url=...][img=...]...[/img][/url]
+            const pattern1 = /\[url=([^\]]*?)\]\[img=([^\]]*?)\]((?:(?!\[url=|\[img).)*?)\[\/img\]\[\/url\]/gi;
+            let match;
+            while ((match = pattern1.exec(text)) !== null) {
+                const imgUrl = match[2];
+                counts[imgUrl] = (counts[imgUrl] || 0) + 1;
 
-            results.push({
-                full: match[0],
-                url: match[1],
-                img: imgUrl,
-                desc: match[3],
-                index: match.index,
-                length: match[0].length,
-                rank: counts[imgUrl],
-                type: 'complex'
-            });
-        }
+                results.push({
+                    full: match[0],
+                    url: match[1],
+                    img: imgUrl,
+                    desc: match[3],
+                    index: match.index,
+                    length: match[0].length,
+                    rank: counts[imgUrl],
+                    type: 'complex'
+                });
+            }
 
-        // Pattern 2: Einfach [img]URL|Desc[/img]
-        const pattern2 = /\[img\]((?:(?!\[img).)*?)\[\/img\]/gi;
-        while ((match = pattern2.exec(text)) !== null) {
-            const content = match[1];
-            const pipeIndex = content.indexOf('|');
-            const imgUrl = pipeIndex !== -1 ? content.substring(0, pipeIndex) : content;
+            // Pattern 2: Einfach [img]URL|Desc[/img]
+            const pattern2 = /\[img\]((?:(?!\[img).)*?)\[\/img\]/gi;
+            while ((match = pattern2.exec(text)) !== null) {
+                const content = match[1];
+                const pipeIndex = content.indexOf('|');
+                const imgUrl = pipeIndex !== -1 ? content.substring(0, pipeIndex) : content;
 
-            counts[imgUrl] = (counts[imgUrl] || 0) + 1;
+                counts[imgUrl] = (counts[imgUrl] || 0) + 1;
 
-            results.push({
-                full: match[0],
-                img: imgUrl,
-                desc: pipeIndex !== -1 ? content.substring(pipeIndex + 1) : "",
-                index: match.index,
-                length: match[0].length,
-                rank: counts[imgUrl],
-                type: 'simple'
-            });
-        }
+                results.push({
+                    full: match[0],
+                    img: imgUrl,
+                    desc: pipeIndex !== -1 ? content.substring(pipeIndex + 1) : "",
+                    index: match.index,
+                    length: match[0].length,
+                    rank: counts[imgUrl],
+                    type: 'simple'
+                });
+            }
 
-        // Pattern 3: Alt-Simple [img=URL]Description[/img]
-        const pattern3 = /\[img=([^\]]*?)\]((?:(?!\[img).)*?)\[\/img\]/gi;
-        while ((match = pattern3.exec(text)) !== null) {
-            const imgUrl = match[1];
-            counts[imgUrl] = (counts[imgUrl] || 0) + 1;
+            // Pattern 3: Alt-Simple [img=URL]Description[/img]
+            const pattern3 = /\[img=([^\]]*?)\]((?:(?!\[img).)*?)\[\/img\]/gi;
+            while ((match = pattern3.exec(text)) !== null) {
+                const imgUrl = match[1];
+                counts[imgUrl] = (counts[imgUrl] || 0) + 1;
 
-            results.push({
-                full: match[0],
-                img: imgUrl,
-                desc: match[2],
-                index: match.index,
-                length: match[0].length,
-                rank: counts[imgUrl],
-                type: 'alt_simple'
-            });
+                results.push({
+                    full: match[0],
+                    img: imgUrl,
+                    desc: match[2],
+                    index: match.index,
+                    length: match[0].length,
+                    rank: counts[imgUrl],
+                    type: 'alt_simple'
+                });
+            }
+        } catch (e) {
+            // Sicherheitsnetz: bei unerwarteten Regex-Fehlern leeres Ergebnis liefern
+            // statt die UI zu blockieren.
+            console.warn('EasyPhoto: parsing error', e);
+            return [];
         }
 
         // Sortieren und Überlappungen filtern (verhindert Doppelmatches zwischen Pattern 1 und 3)
@@ -87,12 +107,15 @@
     };
 
     const getImages = (textarea) => {
-        if (textarea._epLastValue === textarea.value && textarea._epLastImages) {
-            return textarea._epLastImages;
+        const state = stateMap.get(textarea);
+        if (state && state.lastValue === textarea.value && state.lastImages) {
+            return state.lastImages;
         }
         const images = findImages(textarea.value);
-        textarea._epLastValue = textarea.value;
-        textarea._epLastImages = images;
+        if (state) {
+            state.lastValue = textarea.value;
+            state.lastImages = images;
+        }
         return images;
     };
 
@@ -124,8 +147,12 @@
             const end = textarea.selectionEnd;
 
             textarea.value = newContent;
+
             // Cache invalidieren – MUSS vor renderList() passieren
-            textarea._epLastValue = null;
+            const state = stateMap.get(textarea);
+            if (state) {
+                state.lastValue = null;
+            }
 
             if (listContainer) {
                 renderList(textarea, listContainer);
@@ -146,11 +173,34 @@
         }
     };
 
+    // Erlaubte Bild-Endungen für Thumbnail-Anzeige.
+    // Defense-in-depth zusätzlich zur Origin-Prüfung: verhindert, dass z.B.
+    // Endpunkte mit Seiteneffekten als <img src> geladen werden.
+    // SVG bewusst NICHT erlaubt: würde im <img src> zwar nicht ausgeführt,
+    // ist aber als Thumbnail-Format hier ohnehin irrelevant und vermeidet
+    // jede Diskussion um inline-Skripte in SVG-Dateien.
+    const IMAGE_EXTENSION_RE = /\.(jpe?g|png|gif|webp|avif|bmp)(\?.*)?$/i;
+
     const isLocal = (url) => {
         try {
             const currentOrigin = window.location.origin;
             const testUrl = new URL(url, currentOrigin);
             return testUrl.origin === currentOrigin && testUrl.protocol.startsWith('http');
+        } catch (e) {
+            return false;
+        }
+    };
+
+    const isSafeLocalImage = (url) => {
+        if (!isLocal(url)) return false;
+        try {
+            const parsed = new URL(url, window.location.origin);
+            // Pfad muss wie ein Bild aussehen – oder Friendica-typische Photo-Pfade
+            // (/photo/, /photos/, /proxy/) zulassen, die oft keine Extension tragen.
+            const path = parsed.pathname;
+            if (IMAGE_EXTENSION_RE.test(path)) return true;
+            if (/^\/(photo|photos|proxy)\//i.test(path)) return true;
+            return false;
         } catch (e) {
             return false;
         }
@@ -184,6 +234,8 @@
         listContainer.dataset.fingerprint = newFingerprint;
         listContainer.innerHTML = '';
 
+        const PRIVACY_PLACEHOLDER = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSIzIiB5PSIzIiB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHJ4PSIyIiByeT0iMiIvPjxjaXJjbGUgY3g9IjguNSIgY3k9IjguNSIgcj0iMS41Ii8+PHBhdGggZD0iTTIxIDE1bC01LTUtNCA0LTQtNC00IDQiLz48L3N2Zz4=';
+
         images.forEach((img, i) => {
             const row = document.createElement('div');
             row.className = 'ep-row';
@@ -193,12 +245,10 @@
             const thumb = document.createElement('img');
             thumb.className = 'ep-thumb';
 
-            if (isLocal(img.img)) {
-                if (/^(https?:|\/)/i.test(img.img)) {
-                    thumb.src = img.img;
-                }
+            if (isSafeLocalImage(img.img)) {
+                thumb.src = img.img;
             } else {
-                thumb.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSIzIiB5PSIzIiB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHJ4PSIyIiByeT0iMiIvPjxjaXJjbGUgY3g9IjguNSIgY3k9IjguNSIgcj0iMS41Ii8+PHBhdGggZD0iTTIxIDE1bC01LTUtNCA0LTQtNC00IDQiLz48L3N2Zz4=';
+                thumb.src = PRIVACY_PLACEHOLDER;
                 const privacyText = (typeof easyphoto_l10n !== 'undefined') ? easyphoto_l10n.privacy : 'External image (privacy protection)';
                 thumb.title = privacyText;
                 thumb.alt = privacyText;
@@ -239,7 +289,7 @@
         const targetNodes = addedNodes || [document];
 
         targetNodes.forEach(root => {
-            if (root.nodeType !== 1) return;
+            if (root.nodeType !== 1 && root.nodeType !== 9) return;
             const textareas = root.tagName === 'TEXTAREA' ? [root] : root.querySelectorAll('textarea');
 
             textareas.forEach(textarea => {
@@ -252,30 +302,32 @@
 
                 textarea.parentNode.insertBefore(listContainer, textarea.nextSibling);
 
-                let lastValue = textarea.value;
-                let debounceTimer = null;
-
-                const cleanup = () => {
-                    if (textarea._epInterval) clearInterval(textarea._epInterval);
-                    if (debounceTimer) clearTimeout(debounceTimer);
-                    if (listContainer.parentNode) listContainer.remove();
-                    textarea.removeEventListener('input', debouncedRender);
-                    textarea.classList.remove('ep-processed');
-                    delete textarea._epInterval;
-                    delete textarea._epCleanup;
+                // State-Container für dieses Textarea – sauber in WeakMap statt
+                // direkt am DOM-Element.
+                const state = {
+                    lastValue: null,
+                    lastImages: null,
+                    lastSeenValue: textarea.value,
+                    intervalId: null,
+                    debounceTimer: null,
+                    visibilityHandler: null,
+                    cleanup: null
                 };
+                stateMap.set(textarea, state);
 
-                const safeRender = (e) => {
-                    if (e && e.detail && e.detail.source === 'easyphoto') return;
-                    if (!textarea.isConnected) { cleanup(); return; }
+                const safeRender = () => {
+                    if (!textarea.isConnected) {
+                        if (state.cleanup) state.cleanup();
+                        return;
+                    }
 
                     // SICHTBARKEIT: Optimierung für Performance und position:fixed Dialoge
                     if (document.hidden || textarea.getBoundingClientRect().width === 0) {
                         return;
                     }
 
-                    if (textarea.value !== lastValue) {
-                        lastValue = textarea.value;
+                    if (textarea.value !== state.lastSeenValue) {
+                        state.lastSeenValue = textarea.value;
                         renderList(textarea, listContainer);
                     }
                 };
@@ -283,8 +335,44 @@
                 // Debouncing auf input-Event: verhindert Regex-Läufe bei jedem Tastendruck
                 const debouncedRender = (e) => {
                     if (e && e.detail && e.detail.source === 'easyphoto') return;
-                    clearTimeout(debounceTimer);
-                    debounceTimer = setTimeout(() => safeRender(e), 300);
+                    clearTimeout(state.debounceTimer);
+                    state.debounceTimer = setTimeout(safeRender, 300);
+                };
+
+                // Polling-Tick: bei Tab-Wechsel echt pausieren statt nur leer durchzulaufen.
+                const startPolling = () => {
+                    if (state.intervalId === null) {
+                        state.intervalId = setInterval(safeRender, 1500);
+                    }
+                };
+                const stopPolling = () => {
+                    if (state.intervalId !== null) {
+                        clearInterval(state.intervalId);
+                        state.intervalId = null;
+                    }
+                };
+
+                state.visibilityHandler = () => {
+                    if (document.hidden) {
+                        stopPolling();
+                    } else {
+                        startPolling();
+                        // Nach Rückkehr einmal direkt rendern, falls Wert geändert wurde
+                        safeRender();
+                    }
+                };
+                document.addEventListener('visibilitychange', state.visibilityHandler);
+
+                state.cleanup = () => {
+                    stopPolling();
+                    if (state.debounceTimer) clearTimeout(state.debounceTimer);
+                    if (state.visibilityHandler) {
+                        document.removeEventListener('visibilitychange', state.visibilityHandler);
+                    }
+                    if (listContainer.parentNode) listContainer.remove();
+                    textarea.removeEventListener('input', debouncedRender);
+                    textarea.classList.remove('ep-processed');
+                    stateMap.delete(textarea);
                 };
 
                 textarea.addEventListener('input', debouncedRender);
@@ -293,7 +381,7 @@
                     if (e.target.classList.contains('ep-input')) {
                         const imgIdentity = {
                             img: e.target.dataset.img,
-                            rank: parseInt(e.target.dataset.rank)
+                            rank: parseInt(e.target.dataset.rank, 10)
                         };
                         updateTextarea(textarea, imgIdentity, e.target.value, listContainer);
                     }
@@ -305,8 +393,11 @@
                 listContainer.addEventListener('paste', stopEvents);
 
                 renderList(textarea, listContainer);
-                textarea._epInterval = setInterval(safeRender, 1500);
-                textarea._epCleanup = cleanup;
+
+                // Polling nur starten, wenn Tab sichtbar – sonst auf visibilitychange warten.
+                if (!document.hidden) {
+                    startPolling();
+                }
             });
         });
     };
@@ -324,7 +415,10 @@
                 mutation.removedNodes.forEach(node => {
                     if (node.nodeType !== 1) return;
                     const textareas = node.tagName === 'TEXTAREA' ? [node] : node.querySelectorAll('.ep-processed');
-                    textareas.forEach(ta => { if (ta._epCleanup) ta._epCleanup(); });
+                    textareas.forEach(ta => {
+                        const state = stateMap.get(ta);
+                        if (state && state.cleanup) state.cleanup();
+                    });
                 });
             }
         });
