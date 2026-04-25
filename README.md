@@ -1,4 +1,14 @@
 # Friendica-Addon
-Addons for the Fediverse Software Friendica
+Addons für die Fediverse-Software Friendica
 
-These addons are not intended to be used on productive systems. The use of these addons is at your own risk.
+Diese Addons sind nicht für den Einsatz auf Produktivsystemen vorgesehen. Die Verwendung erfolgt auf eigene Gefahr.
+
+Diese Addons wurden mit Hilfe von Gemini und Claude erstellt. 
+
+---
+# Friendica-Addon
+Add-ons for the Fediverse software Friendica
+
+These add-ons are not intended for use on production systems. Use at your own risk.
+
+These add-ons were created using Gemini and Claude.
