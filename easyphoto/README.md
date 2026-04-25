@@ -23,6 +23,9 @@ EasyPhoto ist eine Erweiterung für Friendica, die das Hinzufügen von Bildbesch
 
   
 
+
+## Security & Privacy
+
 -  **Schutz der Privatsphäre:** Vorschaubilder von externen Servern werden nicht automatisch geladen, um Tracking durch Drittanbieter zu verhindern.
 
   
