@@ -45,4 +45,22 @@ RealMember bezieht die aktuelle Domain-Liste direkt aus einem öffentlichen GitH
 > ⚠️ **Sicherheitshinweis zum Cronjob:**  
 > Bitte beachte, dass dieses Skript (`update_domains.php`) auf externe Inhalte zugreift und eine PHP-Datei (`disposable_domains.php`) generiert. Wir empfehlen diesen automatisierten Cronjob nur, wenn du der genannten GitHub-Quelle (disposable-email-domains) vertraust. Andernfalls kannst du das Update-Skript auch bei Bedarf manuell in der Konsole ausführen, um volle Kontrolle über die Änderungen zu behalten oder die Domains von Hand einpflegen.
 
-Weitere Infos dazu auf [friendica.dev](https://friendica.dev/friendica-addon-realmember-spam-analyse-dashboard-fuer-friendica/).
+## Lizenz / License
+
+  
+
+  
+
+GNU Affero General Public License v3.0 (AGPL-3.0-or-later)
+
+  
+
+  
+
+Autor: [Jools](https://friendica.de/profile/jools)
+
+  
+
+Erstellt mit Unterstützung von Gemini und Claude. / Created with Gemini and Claude.
+
+Weitere Informationen zu diesem Addon auf [friendica.dev](https://friendica.dev)
