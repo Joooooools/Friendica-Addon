@@ -30,13 +30,20 @@ return [
 	'smm', 'panel', 'reseller', 'engagement', 'likes', 'boost', 'growth', 'api', 'social media', 'tiktok', 'telegram',
 	
 	// Phishing, Security & Scams
-	'account', 'suspended', 'security', 'alert', 'verification', 'verify', 'compliance', 'unusual activity',
-	'resolution-center', 'secret phrase', 'mnemonic', 'seed phrase', 'recovery', 'login', 'official', 'urgent',
-	'wichtig', 'limited', 'begrenzt', 'exclusive', 'exklusiv', 'access', 'invoice', 'rechnung', 'overdue', 'überfällig',
-	'payment', 'caution', 'warning', 'attention', 'achtung', 'customer service', 'support',
+	// NOTE: We deliberately keep this list narrow. Words like "account", "verify",
+	// "login", "support", "service", "official", "warning", "attention" are
+	// extremely common in legitimate communication (newsletters, support replies,
+	// onboarding mails). Including them here used to produce massive false
+	// positives — most newsletters mention "your account" at some point.
+	// What we do match: specific, scam-typical phrases that practically never
+	// appear outside phishing/crypto-fraud contexts.
+	'suspended', 'compliance', 'unusual activity',
+	'resolution-center', 'secret phrase', 'mnemonic', 'seed phrase',
+	'limited', 'begrenzt', 'exclusive', 'exklusiv', 'invoice', 'overdue', 'überfällig',
+	'payment',
 	
 	// General Bot Phrases & Trash
-	'best price', 'work from home', 'job offer', 'hiring', 'salary', 'gehalt', 'karriere', 'apply now', 'klicken', 'click here',
-	'visit my website', 'rechnung', 'exclusive', 'visit', 'check this', 'must see', 'sonderangebot', 'jetzt zugreifen',
-	'vorteilspreis', 'nur heute', 'verify'
+	'best price', 'work from home', 'job offer', 'apply now', 'click here',
+	'visit my website', 'rechnung', 'check this', 'must see', 'sonderangebot', 'jetzt zugreifen',
+	'vorteilspreis', 'nur heute'
 ];

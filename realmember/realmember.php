@@ -2,7 +2,7 @@
 /**
  * Name: RealMember
  * Description: Advanced read-only spam detection for site administrators.
- * Version: 1.0
+ * Version: 1.1
  * Author: Jools <https://friendica.de/profile/jools>
  * License: AGPL-3.0-or-later
  * 
@@ -12,6 +12,7 @@
 
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
+use Friendica\Core\System;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Content\Pager;
@@ -21,9 +22,11 @@ use Friendica\Content\Pager;
  */
 function realmember_module()
 {
-	if (!DI::userSession()->getLocalUserId() || !DI::userSession()->isSiteAdmin()) {
-		header('Location: ' . DI::baseUrl() . '/login');
-		exit();
+	if (!DI::userSession()->getLocalUserId()) {
+		System::externalRedirect(DI::baseUrl() . '/login');
+	}
+	if (!DI::userSession()->isSiteAdmin()) {
+		System::externalRedirect(DI::baseUrl() . '/network');
 	}
 }
 
@@ -32,8 +35,8 @@ function realmember_module()
  */
 function realmember_install()
 {
-	Hook::register('moderation_mod_init', 'addon/realmember/realmember.php', 'realmember_moderation_mod_init');
-	Hook::register('moderation_users_tabs', 'addon/realmember/realmember.php', 'realmember_users_tabs');
+	Hook::register('moderation_mod_init', __FILE__, 'realmember_moderation_mod_init');
+	Hook::register('moderation_users_tabs', __FILE__, 'realmember_users_tabs');
 }
 
 /**
@@ -41,8 +44,8 @@ function realmember_install()
  */
 function realmember_uninstall()
 {
-	Hook::unregister('moderation_mod_init', 'addon/realmember/realmember.php', 'realmember_moderation_mod_init');
-	Hook::unregister('moderation_users_tabs', 'addon/realmember/realmember.php', 'realmember_users_tabs');
+	Hook::unregister('moderation_mod_init', __FILE__, 'realmember_moderation_mod_init');
+	Hook::unregister('moderation_users_tabs', __FILE__, 'realmember_users_tabs');
 }
 
 /**
@@ -70,7 +73,7 @@ function realmember_users_tabs(array &$arr)
 	$arr['tabs'][] = [
 		'label' => 'RealMember',
 		'url' => 'realmember',
-		'sel' => ($arr['selectedTab'] == 'realmember' ? 'active' : ''),
+		'sel' => (($arr['selectedTab'] ?? '') == 'realmember' ? 'active' : ''),
 		'title' => DI::l10n()->t('Spam-Analyse Dashboard'),
 		'id' => 'admin-users-realmember',
 		'accesskey' => 's',
@@ -87,58 +90,41 @@ function realmember_get_criteria()
 	$manual_list = array_map('trim', $manual_list);
 
 	$disc_domains_path = __DIR__ . '/data/disposable_domains.php';
-	$disc_count = file_exists($disc_domains_path) ? count(include $disc_domains_path) : 0;
+	$disc_data = file_exists($disc_domains_path) ? include $disc_domains_path : [];
+	$disc_count = is_array($disc_data) ? count($disc_data) : 0;
 
 	$keywords_path = __DIR__ . '/data/spam_keywords.php';
 	$keywords = file_exists($keywords_path) ? include $keywords_path : [];
+	if (!is_array($keywords)) {
+		$keywords = [];
+	}
+
+	// Suspicious TLDs commonly abused for spam.
+	// Each entry MUST start with '.' so str_ends_with() anchors on a real DNS
+	// label boundary (otherwise '.co' would falsely match 'something.co.uk').
+	$bad_tlds = [
+		'.accountant', '.beauty', '.best', '.bid', '.buzz', '.cf', '.click',
+		'.date', '.faith', '.fit', '.fun', '.ga', '.gq', '.icu', '.live',
+		'.loan', '.ml', '.monster', '.mov', '.ninja', '.online', '.pw',
+		'.quest', '.racing', '.rest', '.review', '.shop', '.site', '.space',
+		'.stream', '.surf', '.tk', '.top', '.win', '.work', '.xyz', '.zip'
+	];
+	// Drop any entry without a leading dot (defensive against future edits).
+	$bad_tlds = array_values(array_filter($bad_tlds, fn($tld) => str_starts_with($tld, '.')));
 
 	return [
-		'bad_tlds' => [
-			'.accountant',
-			'.beauty',
-			'.best',
-			'.bid',
-			'.buzz',
-			'.cf',
-			'.click',
-			'.date',
-			'.faith',
-			'.fit',
-			'.fun',
-			'.ga',
-			'.gq',
-			'.icu',
-			'.live',
-			'.loan',
-			'.ml',
-			'.monster',
-			'.mov',
-			'.ninja',
-			'.online',
-			'.pw',
-			'.quest',
-			'.racing',
-			'.rest',
-			'.review',
-			'.shop',
-			'.site',
-			'.space',
-			'.stream',
-			'.surf',
-			'.tk',
-			'.top',
-			'.win',
-			'.work',
-			'.xyz',
-			'.zip'
-		],
+		'bad_tlds' => $bad_tlds,
 		'disposable_count' => $disc_count,
 		'is_updated' => file_exists(__DIR__ . '/data/last_update.txt'),
 		'last_update' => file_exists(__DIR__ . '/data/last_update.txt') ? file_get_contents(__DIR__ . '/data/last_update.txt') : 'Nie (Statisch)',
-		'updater_path' => realpath(__DIR__ . '/scripts/update_domains.php'),
+		// realpath() returns false if the file is missing/unreadable; fall back
+		// so the cron command shown in the UI is never an empty string.
+		'updater_path' => realpath(__DIR__ . '/scripts/update_domains.php') ?: __DIR__ . '/scripts/update_domains.php',
 		'manual_count' => count($manual_list),
 		'manual_list' => $manual_list,
-		'keywords' => $keywords
+		'keywords' => $keywords,
+		// Pre-computed because Friendica's Smarty wrapper may not allow count() in templates.
+		'keywords_count' => count($keywords),
 	];
 }
 
@@ -147,17 +133,41 @@ function realmember_get_criteria()
  */
 function realmember_content()
 {
-	if (!DI::userSession()->getLocalUserId() || !DI::userSession()->isSiteAdmin()) {
-		header('Location: ' . DI::baseUrl() . '/login');
-		exit();
+	if (!DI::userSession()->getLocalUserId()) {
+		System::externalRedirect(DI::baseUrl() . '/login');
+	}
+	if (!DI::userSession()->isSiteAdmin()) {
+		System::externalRedirect(DI::baseUrl() . '/network');
 	}
 
 	DI::page()->registerStylesheet('addon/realmember/css/realmember.css');
 
+	// Hard whitelists for all GET parameters. Even though the SQL paths below
+	// use parameterized queries and an ORDER BY whitelist, normalizing here
+	// keeps unvalidated input out of the template's hidden form fields and
+	// link href attributes.
+	$allowed_filters = ['all', 'recent', 'new', 'pending', 'spam'];
+	$allowed_sorts   = ['name', 'email', 'date', 'score'];
+	$allowed_dirs    = ['asc', 'desc'];
+
 	$filter = $_GET['filter'] ?? 'all';
+	if (!in_array($filter, $allowed_filters, true)) {
+		$filter = 'all';
+	}
+	// Search input: trim and cap at 100 chars (covers any realistic target;
+	// mb_substr keeps multi-byte characters intact).
 	$search = trim($_GET['search'] ?? '');
+	if ($search !== '') {
+		$search = mb_substr($search, 0, 100, 'UTF-8');
+	}
 	$sort = $_GET['sort'] ?? 'date';
-	$dir = $_GET['dir'] ?? 'desc';
+	if (!in_array($sort, $allowed_sorts, true)) {
+		$sort = 'date';
+	}
+	$dir = strtolower($_GET['dir'] ?? 'desc');
+	if (!in_array($dir, $allowed_dirs, true)) {
+		$dir = 'desc';
+	}
 	$criteria = realmember_get_criteria();
 
 	// Pre-load disposable domains list once (performance: avoid re-reading per user)
@@ -167,12 +177,18 @@ function realmember_content()
 		$disposable_domains = [];
 	}
 
-	// Pre-build keyword regex pattern once (performance: single match instead of loop)
+	// Pre-build keyword regex pattern once (single match instead of per-keyword loop).
+	// preg_quote with delimiter '/' protects against future keywords containing meta-chars.
+	// \b word boundaries prevent substring false-positives (e.g. "loan" matching "Sloan").
+	// /u flag enables Unicode-aware boundaries for multi-byte characters.
 	$keyword_pattern = null;
 	if (!empty($criteria['keywords'])) {
-		$escaped = array_map('preg_quote', $criteria['keywords']);
-		$keyword_pattern = '/' . implode('|', $escaped) . '/i';
+		$escaped = array_map(fn($k) => preg_quote($k, '/'), $criteria['keywords']);
+		$keyword_pattern = '/\b(' . implode('|', $escaped) . ')\b/iu';
 	}
+
+	// Cache for federated nickname counts (one query per unique nickname per request)
+	$nickname_count_cache = [];
 
 	// Generate Moderation Tabs (consistent with core)
 	$all = DBA::count('user', ["`uid` != ?", 0]);
@@ -270,13 +286,19 @@ function realmember_content()
 		'$modurl' => 'moderation/'
 	]);
 
-	// Whitelist sorting 
+	// Whitelist sorting
 	$sort_map = [
 		'name' => 'username',
 		'email' => 'email',
 		'date' => 'register_date'
 	];
 	$order_field = $sort_map[$sort] ?? 'register_date';
+
+	// Defense-in-Depth: hard-coded allowlist for the SQL ORDER BY column.
+	$allowed_order_fields = ['username', 'email', 'register_date'];
+	if (!in_array($order_field, $allowed_order_fields, true)) {
+		$order_field = 'register_date';
+	}
 	$order_dir = (strtolower($dir) === 'asc') ? 'ASC' : 'DESC';
 
 	// Constructing a robust condition string for DBA::p calls
@@ -288,8 +310,9 @@ function realmember_content()
 	} elseif ($filter === 'new') {
 		$condition .= " AND `user`.`register_date` > DATE_SUB(NOW(), INTERVAL 30 DAY) ";
 	} elseif ($filter === 'pending') {
-		$condition .= " AND `user`.`uid` IN (SELECT `uid` FROM `register` WHERE `uid` != ?) ";
-		$params[] = 0;
+		// Subquery (not JOIN) because $condition is reused in three queries
+		// below — including a COUNT(*) without the register-JOIN.
+		$condition .= " AND `user`.`uid` IN (SELECT `uid` FROM `register`) ";
 	}
 
 	if (!empty($search)) {
@@ -302,8 +325,8 @@ function realmember_content()
 
 	// Pagination setup
 	$pager = new Pager(DI::l10n(), DI::args()->getQueryString(), 20);
-	$limit_start = $pager->getStart();
-	$limit_count = $pager->getItemsPerPage();
+	$limit_start = (int) $pager->getStart();
+	$limit_count = (int) $pager->getItemsPerPage();
 
 	$base_url = DI::baseUrl();
 	$results = [];
@@ -322,9 +345,10 @@ function realmember_content()
 		if ($usersSet) {
 			while ($user = DBA::fetch($usersSet)) {
 				$user['is_removed'] = (bool) $user['account_removed'];
-				$user['profile_url'] = $base_url . '/profile/' . $user['nickname'];
+				// rawurlencode() because nicknames come from DB without re-validation.
+				$user['profile_url'] = $base_url . '/profile/' . rawurlencode($user['nickname']);
 
-				$scoreData = realmember_calculate_risk($user, $criteria, $disposable_domains, $keyword_pattern);
+				$scoreData = realmember_calculate_risk($user, $criteria, $disposable_domains, $keyword_pattern, $nickname_count_cache);
 				if ($scoreData['score'] > 0) {
 					$filtered[] = array_merge($user, $scoreData);
 				}
@@ -345,29 +369,54 @@ function realmember_content()
 			DBA::close($total_res);
 		}
 
-		// Fetch page only (with JOIN for notes)
-		$select_sql = "SELECT `user`.`uid`, `user`.`username`, `user`.`nickname`, `user`.`email`, `user`.`register_date`, 
-		                      `user`.`verified`, `user`.`blocked`, `user`.`account_removed`, `register`.`note`
-		               FROM `user` 
-		               LEFT JOIN `register` ON `user`.`uid` = `register`.`uid`
-		               WHERE " . $condition . " 
-		               ORDER BY `user`.`account_removed` ASC, `user`.`$order_field` $order_dir 
-		               LIMIT $limit_start, $limit_count";
+		// When sorting by score, the DB cannot paginate (score is computed in PHP).
+		// Load the full filtered set, score everyone, sort and slice in PHP.
+		// For other sort fields, the DB paginates efficiently as before.
+		if ($sort === 'score') {
+			$select_sql = "SELECT `user`.`uid`, `user`.`username`, `user`.`nickname`, `user`.`email`, `user`.`register_date`, 
+			                      `user`.`verified`, `user`.`blocked`, `user`.`account_removed`, `register`.`note`
+			               FROM `user` 
+			               LEFT JOIN `register` ON `user`.`uid` = `register`.`uid`
+			               WHERE " . $condition;
 
-		$usersSet = DBA::p($select_sql, ...$params);
-		if ($usersSet) {
-			while ($user = DBA::fetch($usersSet)) {
-				$user['is_removed'] = (bool) $user['account_removed'];
-				$user['profile_url'] = $base_url . '/profile/' . $user['nickname'];
+			$usersSet = DBA::p($select_sql, ...$params);
+			$all_scored = [];
+			if ($usersSet) {
+				while ($user = DBA::fetch($usersSet)) {
+					$user['is_removed'] = (bool) $user['account_removed'];
+					$user['profile_url'] = $base_url . '/profile/' . rawurlencode($user['nickname']);
 
-				$scoreData = realmember_calculate_risk($user, $criteria, $disposable_domains, $keyword_pattern);
-				$results[] = array_merge($user, $scoreData);
+					$scoreData = realmember_calculate_risk($user, $criteria, $disposable_domains, $keyword_pattern, $nickname_count_cache);
+					$all_scored[] = array_merge($user, $scoreData);
+				}
+				DBA::close($usersSet);
 			}
-			DBA::close($usersSet);
+			$results = $all_scored;
+		} else {
+			// Standard path: DB paginates by name/email/date.
+			$select_sql = "SELECT `user`.`uid`, `user`.`username`, `user`.`nickname`, `user`.`email`, `user`.`register_date`, 
+			                      `user`.`verified`, `user`.`blocked`, `user`.`account_removed`, `register`.`note`
+			               FROM `user` 
+			               LEFT JOIN `register` ON `user`.`uid` = `register`.`uid`
+			               WHERE " . $condition . " 
+			               ORDER BY `user`.`account_removed` ASC, `user`.`$order_field` $order_dir 
+			               LIMIT $limit_start, $limit_count";
+
+			$usersSet = DBA::p($select_sql, ...$params);
+			if ($usersSet) {
+				while ($user = DBA::fetch($usersSet)) {
+					$user['is_removed'] = (bool) $user['account_removed'];
+					$user['profile_url'] = $base_url . '/profile/' . rawurlencode($user['nickname']);
+
+					$scoreData = realmember_calculate_risk($user, $criteria, $disposable_domains, $keyword_pattern, $nickname_count_cache);
+					$results[] = array_merge($user, $scoreData);
+				}
+				DBA::close($usersSet);
+			}
 		}
 	}
 
-	// Final sort by score if requested (affects current results set)
+	// Score sort: applied to the full set when sort=score (loaded above), then sliced.
 	if ($sort === 'score') {
 		usort($results, function ($a, $b) use ($dir) {
 			if ($a['is_removed'] !== $b['is_removed']) {
@@ -377,6 +426,7 @@ function realmember_content()
 				? $a['score'] <=> $b['score']
 				: $b['score'] <=> $a['score'];
 		});
+		$results = array_slice($results, $limit_start, $limit_count);
 	}
 
 	$t = Renderer::getMarkupTemplate('realmember.tpl', 'addon/realmember/');
@@ -395,14 +445,23 @@ function realmember_content()
 
 /**
  * Calculate the risk score for a user based on multiple read-only signals.
- * 
- * @param array $user           User data from database
- * @param array $criteria       Analysis criteria (TLDs, keywords, manual rules)
- * @param array $disposable_domains Pre-loaded list of disposable email domains
+ *
+ * SECURITY NOTE on the returned 'reasons' array:
+ * The strings contain interpolated user-controlled data (email domains,
+ * matched keywords, admin patterns). They MUST always be rendered through
+ * Smarty's default auto-escaping (`{{$reason}}`, never `{{$reason nofilter}}`).
+ * If a future change wants to render reasons as HTML (icons, bold), restructure
+ * them into typed data ({type, value, ...}) and assemble in the template —
+ * never insert raw HTML into these strings.
+ *
+ * @param array $user                  User data from database
+ * @param array $criteria              Analysis criteria (TLDs, keywords, manual rules)
+ * @param array $disposable_domains    Pre-loaded list of disposable email domains
  * @param string|null $keyword_pattern Pre-built regex pattern for keyword matching
+ * @param array &$nickname_count_cache Reference to per-request cache for nickname counts
  * @return array Score, reasons, and risk level
  */
-function realmember_calculate_risk($user, $criteria, $disposable_domains = [], $keyword_pattern = null)
+function realmember_calculate_risk($user, $criteria, $disposable_domains = [], $keyword_pattern = null, &$nickname_count_cache = [])
 {
 	$score = 0;
 	$reasons = [];
@@ -413,10 +472,16 @@ function realmember_calculate_risk($user, $criteria, $disposable_domains = [], $
 	$domain = $parts[1] ?? '';
 
 	// Layer 1: Manual System Disallowed List (100 Points)
+	// Strict suffix match consistent with Friendica core's disallowed_email
+	// behaviour — NOT fnmatch() with glob patterns (which would surprise admins
+	// entering "example.com" and trigger a divergence from what core blocks).
 	if (!empty($criteria['manual_list'])) {
 		foreach ($criteria['manual_list'] as $item) {
 			$pat = strtolower(trim($item));
-			if ($domain && (fnmatch($pat, $domain) || ($pat == $domain) || ($pat == $email))) {
+			if ($pat === '' || $domain === '') {
+				continue;
+			}
+			if ($email === $pat || $domain === $pat || str_ends_with($domain, '.' . $pat)) {
 				$score += 100;
 				$reasons[] = "Systemweit gesperrte E-Mail (Admin-Regel: $pat)";
 				break;
@@ -465,34 +530,36 @@ function realmember_calculate_risk($user, $criteria, $disposable_domains = [], $
 	$email_prefix = str_replace(['.', '-', '_'], '', $parts[0] ?? ''); // Punkte ignorieren
 
 	$check_entropy = function ($orig_str) {
-		// Für das Buchstabenverhältnis Satzzeichen entfernen
 		$str_clean = str_replace(['.', '-', '_'], '', $orig_str);
-		if (strlen($str_clean) > 7) {
-			$vowels = preg_match_all('/[aeiouy]/i', $str_clean);
-			$consonants_and_nums = strlen($str_clean) - $vowels;
+
+		// mb_strlen + Unicode-aware vowel class so that names like "müllermäxchen"
+		// or "björnsson" are not falsely flagged. ASCII-only [aeiouy] would not
+		// recognise the umlauts and bias the heuristic against names with diacritics.
+		$len = mb_strlen($str_clean, 'UTF-8');
+		if ($len > 7) {
+			$vowel_re = '/[aeiouyäöüáéíóúàèìòùâêîôûãñåøæ]/iu';
+			$vowels = preg_match_all($vowel_re, $str_clean);
+			$consonants_and_nums = $len - $vowels;
 
 			// 1. Extrem wenige Vokale oder mieses Verhältnis (z.B. rtkz99)
 			if ($vowels < 2 || ($consonants_and_nums / max(1, $vowels)) > 4) {
 				return true;
 			}
 
-			// 2. Tastenfeld-Smash prüfen
-			// VORHER: Übliche Namens-Silben (Cluster) im Deutschen/Englischen normalisieren, 
-			// damit echte Namen (z.B. "schlaephucke" oder "schwaab") nicht bestraft werden.
-			// Satzzeichen bleiben als "Trenner" im String!
+			// 2. Tastenfeld-Smash prüfen — übliche Namens-Cluster vorher normalisieren,
+			// damit echte Namen ("schlaephucke") nicht bestraft werden.
 			$normalized = str_ireplace(
 				['sch', 'ch', 'tz', 'ck', 'th', 'ph', 'qu'],
 				['s', 'c', 'z', 'k', 't', 'f', 'q'],
 				$orig_str
 			);
 
-			// a) 6 Konsonanten am Stück (ohne Unterbrechung durch Punkte/Vokale)
+			// a) 6 Konsonanten am Stück
 			if (preg_match('/[bcdfghjklmnpqrstvwxz]{6,}/i', $normalized)) {
 				return true;
 			}
-
-			// b) 5 Vokale am Stück (z.B. aouie)
-			if (preg_match('/[aeiouy]{5,}/i', $normalized)) {
+			// b) 5 Vokale am Stück
+			if (preg_match('/[aeiouyäöüáéíóúàèìòùâêîôûãñåøæ]{5,}/iu', $normalized)) {
 				return true;
 			}
 		}
@@ -507,6 +574,51 @@ function realmember_calculate_risk($user, $criteria, $disposable_domains = [], $
 	if ($check_entropy($email_prefix)) {
 		$score += 20;
 		$reasons[] = "Verdächtiges E-Mail-Präfix (Bot-Signatur)";
+	}
+
+	// Layer 4: Federated Nickname Frequency
+	// Counts how often this nickname appears across the Fediverse via Friendica's
+	// `contact` table (uid=0 = public contacts). Spammers typically reuse the same
+	// handle on many instances, so this is a useful additional signal.
+	//
+	// We deliberately do NOT whitelist common first names — that would be culturally
+	// biased and unmaintainable. A common name like "stefan" appearing on many
+	// servers earns at most "auffällig" (+25), which is appropriate as a signal.
+	// Only short nicks (<6 chars) and role-based technical nicks are skipped.
+	$technical_nicks = [
+		'support', 'contact', 'webmaster', 'postmaster', 'hostmaster',
+		'moderator', 'administrator', 'friendica', 'noreply', 'no-reply',
+		'feedback', 'newsletter', 'service', 'official'
+	];
+	if (strlen($nickname) >= 6 && !in_array(strtolower($nickname), $technical_nicks, true)) {
+		if (!isset($nickname_count_cache[$nickname])) {
+			$count_result = DBA::p(
+				"SELECT COUNT(*) AS total FROM `contact` 
+				 WHERE `nick` = ? AND `uid` = ? 
+				   AND NOT `self` AND NOT `deleted` AND NOT `blocked`",
+				$nickname,
+				0
+			);
+			$nick_count = 0;
+			if ($count_result) {
+				$row = DBA::fetch($count_result);
+				$nick_count = (int) ($row['total'] ?? 0);
+				DBA::close($count_result);
+			}
+			$nickname_count_cache[$nickname] = $nick_count;
+		}
+		$nick_count = $nickname_count_cache[$nickname];
+
+		if ($nick_count >= 30) {
+			$score += 25;
+			$reasons[] = "Nickname auf $nick_count anderen Servern bekannt (sehr verdächtig)";
+		} elseif ($nick_count >= 10) {
+			$score += 15;
+			$reasons[] = "Nickname auf $nick_count anderen Servern bekannt (auffällig)";
+		} elseif ($nick_count >= 5) {
+			$score += 5;
+			$reasons[] = "Nickname auf $nick_count anderen Servern bekannt";
+		}
 	}
 
 	return [

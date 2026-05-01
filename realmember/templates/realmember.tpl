@@ -218,7 +218,7 @@
 
                     <div class="criteria-group">
                         <h4>🔤 Keyword-Erkennung</h4>
-                        <p>RealMember durchsucht Nutzernamen und Registrierungs-Notizen nach <strong>{{count($criteria.keywords)}} verdächtigen Begriffen</strong> aus den Bereichen Pharma, Krypto, Erotik, Finanzen und Marketing.</p>
+                        <p>RealMember durchsucht Nutzernamen und Registrierungs-Notizen nach <strong>{{$criteria.keywords_count}} verdächtigen Begriffen</strong> aus den Bereichen Pharma, Krypto, Erotik, Finanzen und Marketing.</p>
                         <div class="keyword-preview">
                              {{foreach $criteria.keywords as $kw}}<span class="kw-tag">{{$kw}}</span>{{/foreach}}
                         </div>
@@ -257,12 +257,12 @@
                                     <td>Auffällig</td>
                                 </tr>
                                 <tr>
-                                    <td>Spam-Keyword in der Registrierungs-Notiz</td>
+                                    <td>Spam-Keyword in der Registrierungs-Notiz <small>(pro eindeutigem Treffer)</small></td>
                                     <td>+25</td>
                                     <td>Auffällig</td>
                                 </tr>
                                 <tr>
-                                    <td>Spam-Keyword im Nutzernamen</td>
+                                    <td>Spam-Keyword im Nutzernamen <small>(pro eindeutigem Treffer)</small></td>
                                     <td>+20</td>
                                     <td>Information</td>
                                 </tr>
@@ -271,9 +271,29 @@
                                     <td>+20</td>
                                     <td>Information</td>
                                 </tr>
+                                <tr>
+                                    <td>Nickname auf ≥ 30 Servern im Fediverse bekannt</td>
+                                    <td>+25</td>
+                                    <td>Auffällig</td>
+                                </tr>
+                                <tr>
+                                    <td>Nickname auf ≥ 10 Servern im Fediverse bekannt</td>
+                                    <td>+15</td>
+                                    <td>Information</td>
+                                </tr>
+                                <tr>
+                                    <td>Nickname auf ≥ 5 Servern im Fediverse bekannt</td>
+                                    <td>+5</td>
+                                    <td>Information</td>
+                                </tr>
                             </tbody>
                         </table>
-                        <p><small><em>Der Maximalwert ist auf 100 % begrenzt. Mehrere Treffer addieren sich zum Gesamtrisiko.</em></small></p>
+                        <p><small><em>Der Maximalwert ist auf 100 % begrenzt. Mehrere Treffer addieren sich zum Gesamtrisiko. Bei den Keyword-Prüfungen werden die Punkte für <strong>jedes eindeutig gefundene Keyword</strong> einzeln vergeben — eine Notiz mit drei verschiedenen Spam-Keywords ergibt also +75 Punkte (gecappt bei 100).</em></small></p>
+                    </div>
+                    <div class="criteria-group">
+                        <h4>🌐 Nickname-Häufigkeit im Fediverse</h4>
+                        <p>Spammer registrieren denselben Nicknamen häufig auf vielen Servern parallel. RealMember zählt deshalb, wie oft der Nickname eines Nutzers in deiner föderierten Kontaktdatenbank (Tabelle <code>contact</code>) bereits vorkommt — also wie oft Friendica diesen Handle aus dem Fediverse bereits kennt.</p>
+                        <p><small>💡 Diese Prüfung ist rein lesend, schreibt nichts in die Datenbank und nutzt ausschließlich Daten, die Friendica ohnehin durch normale Föderation kennt.</small></p>
                     </div>
                 </div>
             </details>
