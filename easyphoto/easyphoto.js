@@ -294,6 +294,7 @@
 
             textareas.forEach(textarea => {
                 if (textarea.classList.contains('ep-processed')) return;
+                if (!textarea.isConnected || !textarea.parentNode) return;
                 textarea.classList.add('ep-processed');
 
                 const listContainer = document.createElement('div');
