@@ -1,4 +1,5 @@
 <?php
+
 return [
 	'0-mail.com', '10minutemail.com', '20minutemail.com', '33mail.com', '60minutemail.com', 'abbuzz.com', 'anymail.net',
 	'armyspy.com', 'binkmail.com', 'bobmail.info', 'boun.cr', 'boximail.com', 'burnermail.io', 'cachedmail.com',

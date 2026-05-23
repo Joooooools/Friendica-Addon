@@ -1,0 +1,554 @@
+# ADDON realmember
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica realmember addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-23 20:26+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: realmember.php:65 realmember.php:311
+msgid "Spam Analysis"
+msgstr "Spam Analysis"
+
+#: realmember.php:78
+msgid "Spam Analysis Dashboard"
+msgstr "Spam Analysis Dashboard"
+
+#: realmember.php:152
+msgid "Never (Static)"
+msgstr "Never (Static)"
+
+#: realmember.php:235
+msgid "All"
+msgstr "All"
+
+#: realmember.php:238
+msgid "List of all users"
+msgstr "List of all users"
+
+#: realmember.php:241
+msgid "Active"
+msgstr "Active"
+
+#: realmember.php:244
+msgid "List of active accounts"
+msgstr "List of active accounts"
+
+#: realmember.php:247
+msgid "Pending"
+msgstr "Pending"
+
+#: realmember.php:250
+msgid "List of pending registrations"
+msgstr "List of pending registrations"
+
+#: realmember.php:253
+msgid "Blocked"
+msgstr "Blocked"
+
+#: realmember.php:256
+msgid "List of blocked users"
+msgstr "List of blocked users"
+
+#: realmember.php:259
+msgid "Deleted"
+msgstr "Deleted"
+
+#: realmember.php:262
+msgid "List of pending user deletions"
+msgstr "List of pending user deletions"
+
+#: realmember.php:272
+msgid "More"
+msgstr "More"
+
+#: realmember.php:278 realmember.php:578
+msgid "Information"
+msgstr "Information"
+
+#: realmember.php:280
+msgid "Overview"
+msgstr "Overview"
+
+#: realmember.php:281
+msgid "Reports"
+msgstr "Reports"
+
+#: realmember.php:285
+msgid "Configuration"
+msgstr "Configuration"
+
+#: realmember.php:287
+msgid "Users"
+msgstr "Users"
+
+#: realmember.php:291
+msgid "Tools"
+msgstr "Tools"
+
+#: realmember.php:293
+msgid "Contact Blocklist"
+msgstr "Contact Blocklist"
+
+#: realmember.php:294
+msgid "Server Blocklist"
+msgstr "Server Blocklist"
+
+#: realmember.php:295
+msgid "Delete Item"
+msgstr "Delete Item"
+
+#: realmember.php:299
+msgid "Diagnostics"
+msgstr "Diagnostics"
+
+#: realmember.php:301
+msgid "Item Source"
+msgstr "Item Source"
+
+#: realmember.php:317
+msgid "Moderation"
+msgstr "Moderation"
+
+#: realmember.php:318
+msgid "User registrations waiting for confirmation"
+msgstr "User registrations waiting for confirmation"
+
+#: realmember.php:467
+msgid "RealMember Spam Analysis"
+msgstr "RealMember Spam Analysis"
+
+#: realmember.php:478
+#, php-format
+msgid "Analyzed accounts: %d"
+msgstr "Analyzed accounts: %d"
+
+#: realmember.php:479
+msgid "ℹ️ RealMember is an <strong>automated assistance system</strong> based on heuristics. A high risk score is a strong indicator, but not proof. The final decision about an account should <strong>always</strong> be made manually."
+msgstr "ℹ️ RealMember is an <strong>automated assistance system</strong> based on heuristics. A high risk score is a strong indicator, but not proof. The final decision about an account should <strong>always</strong> be made manually."
+
+#: realmember.php:480
+msgid "Last 48h"
+msgstr "Last 48h"
+
+#: realmember.php:481
+msgid "Last 30 days"
+msgstr "Last 30 days"
+
+#: realmember.php:482
+msgid "Pending / Unverified"
+msgstr "Pending / Unverified"
+
+#: realmember.php:483
+msgid "All users"
+msgstr "All users"
+
+#: realmember.php:484
+msgid "Suspected spam"
+msgstr "Suspected spam"
+
+#: realmember.php:485
+msgid "Email, name or handle..."
+msgstr "Email, name or handle..."
+
+#: realmember.php:486
+msgid "Search"
+msgstr "Search"
+
+#: realmember.php:487
+msgid "Clear search"
+msgstr "Clear search"
+
+#: realmember.php:488
+msgid "Sort by:"
+msgstr "Sort by:"
+
+#: realmember.php:489
+msgid "Date"
+msgstr "Date"
+
+#: realmember.php:490
+msgid "Name"
+msgstr "Name"
+
+#: realmember.php:491
+msgid "Email"
+msgstr "Email"
+
+#: realmember.php:492 realmember.php:493
+msgid "Risk"
+msgstr "Risk"
+
+#: realmember.php:494
+msgid "User"
+msgstr "User"
+
+#: realmember.php:495
+msgid "Email address / Registered"
+msgstr "Email address / Registered"
+
+#: realmember.php:496
+msgid "DELETED"
+msgstr "DELETED"
+
+#: realmember.php:497
+msgid "Registration Note"
+msgstr "Registration Note"
+
+#: realmember.php:498
+msgid "View profile"
+msgstr "View profile"
+
+#: realmember.php:499
+msgid "Analysis results:"
+msgstr "Analysis results:"
+
+#: realmember.php:500
+msgid "No suspicious patterns found."
+msgstr "No suspicious patterns found."
+
+#: realmember.php:501
+msgid "No users found matching the filter criteria."
+msgstr "No users found matching the filter criteria."
+
+#: realmember.php:504
+msgid "📖 What can RealMember do?"
+msgstr "📖 What can RealMember do?"
+
+#: realmember.php:505
+msgid "✅ What RealMember can do"
+msgstr "✅ What RealMember can do"
+
+#: realmember.php:506
+msgid "<strong>Risk assessment of all users:</strong> Every registered account is automatically analyzed based on multiple criteria and receives a risk score from 0% to 100%."
+msgstr "<strong>Risk assessment of all users:</strong> Every registered account is automatically analyzed based on multiple criteria and receives a risk score from 0% to 100%."
+
+#: realmember.php:507
+msgid "<strong>Disposable email detection:</strong> Email addresses are checked against a community-maintained list of thousands of known disposable providers."
+msgstr "<strong>Disposable email detection:</strong> Email addresses are checked against a community-maintained list of thousands of known disposable providers."
+
+#: realmember.php:508
+msgid "<strong>Detect suspicious domains:</strong> Domain extensions (TLDs) commonly abused for spam are automatically detected."
+msgstr "<strong>Detect suspicious domains:</strong> Domain extensions (TLDs) commonly abused for spam are automatically detected."
+
+#: realmember.php:509
+msgid "<strong>Keyword scan:</strong> Usernames and registration notes are searched for almost 200 suspicious terms from the fields of pharma, crypto, erotics, and marketing."
+msgstr "<strong>Keyword scan:</strong> Usernames and registration notes are searched for almost 200 suspicious terms from the fields of pharma, crypto, erotics, and marketing."
+
+#: realmember.php:510
+msgid "<strong>Bot detection (entropy):</strong> Randomly generated nicknames and email prefixes without natural word structure are detected using pattern analysis."
+msgstr "<strong>Bot detection (entropy):</strong> Randomly generated nicknames and email prefixes without natural word structure are detected using pattern analysis."
+
+#: realmember.php:511
+msgid "<strong>Include admin rules:</strong> Your own email blocklists from Friendica settings are automatically included in the assessment."
+msgstr "<strong>Include admin rules:</strong> Your own email blocklists from Friendica settings are automatically included in the assessment."
+
+#: realmember.php:512
+msgid "<strong>Filtering & Sorting:</strong> You can filter and sort results by time period, suspected spam, name, email, or risk score."
+msgstr "<strong>Filtering & Sorting:</strong> You can filter and sort results by time period, suspected spam, name, email, or risk score."
+
+#: realmember.php:513
+msgid "<strong>Search:</strong> A full-text search across names, handles, and email addresses is integrated."
+msgstr "<strong>Search:</strong> A full-text search across names, handles, and email addresses is integrated."
+
+#: realmember.php:514
+msgid "<strong>Automatic updates:</strong> The disposable domain list can be automatically updated daily via a cron job."
+msgstr "<strong>Automatic updates:</strong> The disposable domain list can be automatically updated daily via a cron job."
+
+#: realmember.php:515
+msgid "<strong>Seamless integration:</strong> RealMember appears as a tab in Friendica moderation and blends seamlessly into the existing interface."
+msgstr "<strong>Seamless integration:</strong> RealMember appears as a tab in Friendica moderation and blends seamlessly into the existing interface."
+
+#: realmember.php:517
+msgid "🔒 Security Guarantee"
+msgstr "🔒 Security Guarantee"
+
+#: realmember.php:518
+msgid "<strong>Read-only:</strong> RealMember exclusively reads data. No database entries are created, modified, or deleted."
+msgstr "<strong>Read-only:</strong> RealMember exclusively reads data. No database entries are created, modified, or deleted."
+
+#: realmember.php:519
+msgid "<strong>No automated actions:</strong> RealMember never blocks, deletes, or modifies any account automatically. All decisions are made by the admin."
+msgstr "<strong>No automated actions:</strong> RealMember never blocks, deletes, or modifies any account automatically. All decisions are made by the admin."
+
+#: realmember.php:520
+msgid "<strong>Only for admins:</strong> The dashboard is only visible to site administrators."
+msgstr "<strong>Only for admins:</strong> The dashboard is only visible to site administrators."
+
+#: realmember.php:522
+msgid "⚠️ What RealMember cannot do"
+msgstr "⚠️ What RealMember cannot do"
+
+#: realmember.php:523
+msgid "<strong>No guarantee:</strong> RealMember is an assistance system. Not every flagged account is actually spam, and not every spammer will be detected."
+msgstr "<strong>No guarantee:</strong> RealMember is an assistance system. Not every flagged account is actually spam, and not every spammer will be detected."
+
+#: realmember.php:524
+msgid "<strong>No content scan:</strong> Published posts, comments, or messages of users are not analyzed."
+msgstr "<strong>No content scan:</strong> Published posts, comments, or messages of users are not analyzed."
+
+#: realmember.php:525
+msgid "<strong>No real-time monitoring:</strong> The analysis runs on every page load. There are no push notifications for new suspected spam cases."
+msgstr "<strong>No real-time monitoring:</strong> The analysis runs on every page load. There are no push notifications for new suspected spam cases."
+
+#: realmember.php:526
+msgid "<strong>No deletion or blocking:</strong> RealMember cannot block or delete accounts. Use Friendica's moderation area for this."
+msgstr "<strong>No deletion or blocking:</strong> RealMember cannot block or delete accounts. Use Friendica's moderation area for this."
+
+#: realmember.php:529
+msgid "🛠️ Setup & Maintenance"
+msgstr "🛠️ Setup & Maintenance"
+
+#: realmember.php:530
+msgid "📅 Automatic Updates via Cron Job"
+msgstr "📅 Automatic Updates via Cron Job"
+
+#: realmember.php:531
+msgid "RealMember uses a list of known disposable email providers. This list can be updated manually or automatically via a cron job."
+msgstr "RealMember uses a list of known disposable email providers. This list can be updated manually or automatically via a cron job."
+
+#: realmember.php:532
+msgid "Cron job entry for your system drive:"
+msgstr "Cron job entry for your system drive:"
+
+#: realmember.php:533
+msgid "This command updates the list every day at 03:00 at night."
+msgstr "This command updates the list every day at 03:00 at night."
+
+#: realmember.php:534
+#, php-format
+msgid "<strong>Data Source:</strong> <a href=\"%s\" target=\"_blank\" rel=\"noopener nofollow noreferrer\">disposable-email-domains</a> on GitHub · <strong>License:</strong> <a href=\"%s\" target=\"_blank\" rel=\"noopener nofollow noreferrer\">CC0 1.0 (Public Domain)</a>"
+msgstr "<strong>Data Source:</strong> <a href=\"%s\" target=\"_blank\" rel=\"noopener nofollow noreferrer\">disposable-email-domains</a> on GitHub · <strong>License:</strong> <a href=\"%s\" target=\"_blank\" rel=\"noopener nofollow noreferrer\">CC0 1.0 (Public Domain)</a>"
+
+#: realmember.php:535
+msgid "🚀 Manual Update"
+msgstr "🚀 Manual Update"
+
+#: realmember.php:536
+msgid "A cron job is not mandatory! Alternatively, the update script can simply be run manually in the terminal once as needed to download the list from GitHub:"
+msgstr "A cron job is not mandatory! Alternatively, the update script can simply be run manually in the terminal once as needed to download the list from GitHub:"
+
+#: realmember.php:537
+msgid "<strong>⚠️ Safety Notice:</strong> The update script accesses external content directly from GitHub. Only use the automated cron job if you trust this data source. Otherwise, the list can of course also be entered by hand."
+msgstr "<strong>⚠️ Safety Notice:</strong> The update script accesses external content directly from GitHub. Only use the automated cron job if you trust this data source. Otherwise, the list can of course also be entered by hand."
+
+#: realmember.php:540
+msgid "🔍 Analysis Criteria & Scoring"
+msgstr "🔍 Analysis Criteria & Scoring"
+
+#: realmember.php:541
+msgid "🛡️ Your Admin Rules"
+msgstr "🛡️ Your Admin Rules"
+
+#: realmember.php:542
+#, php-format
+msgid "RealMember reads the email blocklist from your Friendica settings (<code>disallowed_email</code>). Currently, <strong>%d rules</strong> are stored there."
+msgstr "RealMember reads the email blocklist from your Friendica settings (<code>disallowed_email</code>). Currently, <strong>%d rules</strong> are stored there."
+
+#: realmember.php:543
+msgid "If a user's email address exactly matches one of these rules, the risk score is immediately set to <strong>100% (Critical)</strong>."
+msgstr "If a user's email address exactly matches one of these rules, the risk score is immediately set to <strong>100% (Critical)</strong>."
+
+#: realmember.php:544
+msgid "💡 You can find this setting under: <strong>Administration</strong> → <strong>Registration</strong> → <strong>Disallowed email domains</strong>"
+msgstr "💡 You can find this setting under: <strong>Administration</strong> → <strong>Registration</strong> → <strong>Disallowed email domains</strong>"
+
+#: realmember.php:545
+msgid "📧 Disposable Email Detection"
+msgstr "📧 Disposable Email Detection"
+
+#: realmember.php:546
+msgid "automatically updated community blocklist"
+msgstr "automatically updated community blocklist"
+
+#: realmember.php:546
+msgid "bundled basic blocklist"
+msgstr "bundled basic blocklist"
+
+#: realmember.php:546
+#, php-format
+msgid "RealMember checks every email address against a %s with currently <strong>%d known providers</strong>."
+msgstr "RealMember checks every email address against a %s with currently <strong>%d known providers</strong>."
+
+#: realmember.php:547
+#, php-format
+msgid "Last update: <code>%s</code>"
+msgstr "Last update: <code>%s</code>"
+
+#: realmember.php:548
+#, php-format
+msgid "<strong>Source:</strong> <a href=\"%s\" target=\"_blank\" rel=\"noopener\">disposable-email-domains (GitHub)</a> · <strong>License:</strong> <a href=\"%s\" target=\"_blank\" rel=\"noopener\">CC0 1.0 (Public Domain)</a>"
+msgstr "<strong>Source:</strong> <a href=\"%s\" target=\"_blank\" rel=\"noopener\">disposable-email-domains (GitHub)</a> · <strong>License:</strong> <a href=\"%s\" target=\"_blank\" rel=\"noopener\">CC0 1.0 (Public Domain)</a>"
+
+#: realmember.php:549
+msgid "🌐 Suspicious Top-Level Domains"
+msgstr "🌐 Suspicious Top-Level Domains"
+
+#: realmember.php:550
+msgid "Certain domain extensions are used disproportionately often for spam registrations. RealMember monitors the following TLDs:"
+msgstr "Certain domain extensions are used disproportionately often for spam registrations. RealMember monitors the following TLDs:"
+
+#: realmember.php:551
+msgid "🔤 Keyword Detection"
+msgstr "🔤 Keyword Detection"
+
+#: realmember.php:552
+#, php-format
+msgid "RealMember searches usernames and registration notes for <strong>%d suspicious terms</strong> from the fields of pharma, crypto, erotics, finance, and marketing."
+msgstr "RealMember searches usernames and registration notes for <strong>%d suspicious terms</strong> from the fields of pharma, crypto, erotics, finance, and marketing."
+
+#: realmember.php:553
+msgid "🧠 Pattern Analysis (Entropy)"
+msgstr "🧠 Pattern Analysis (Entropy)"
+
+#: realmember.php:554
+msgid "Spam bots often use randomly generated nicknames like <code>zxyprt882</code> that have no natural word structure. RealMember detects such patterns by analyzing the ratio of vowels to consonants."
+msgstr "Spam bots often use randomly generated nicknames like <code>zxyprt882</code> that have no natural word structure. RealMember detects such patterns by analyzing the ratio of vowels to consonants."
+
+#: realmember.php:555
+msgid "📊 Points Distribution"
+msgstr "📊 Points Distribution"
+
+#: realmember.php:556
+msgid "Each criterion assigns a specific number of points. The sum yields the user's risk score:"
+msgstr "Each criterion assigns a specific number of points. The sum yields the user's risk score:"
+
+#: realmember.php:557
+msgid "Criterion"
+msgstr "Criterion"
+
+#: realmember.php:558
+msgid "Points"
+msgstr "Points"
+
+#: realmember.php:559
+msgid "Level"
+msgstr "Level"
+
+#: realmember.php:560
+msgid "Admin blocklist (<code>disallowed_email</code>)"
+msgstr "Admin blocklist (<code>disallowed_email</code>)"
+
+#: realmember.php:561
+msgid "Disposable email provider"
+msgstr "Disposable email provider"
+
+#: realmember.php:562
+msgid "Suspicious Top-Level Domain"
+msgstr "Suspicious Top-Level Domain"
+
+#: realmember.php:563
+msgid "Spam keyword in the registration note <small>(per unique match)</small>"
+msgstr "Spam keyword in the registration note <small>(per unique match)</small>"
+
+#: realmember.php:564
+msgid "Spam keyword in the username <small>(per unique match)</small>"
+msgstr "Spam keyword in the username <small>(per unique match)</small>"
+
+#: realmember.php:565
+msgid "Suspicious name pattern (entropy)"
+msgstr "Suspicious name pattern (entropy)"
+
+#: realmember.php:566
+msgid "Nickname known on ≥ 30 servers in the Fediverse"
+msgstr "Nickname known on ≥ 30 servers in the Fediverse"
+
+#: realmember.php:567
+msgid "Nickname known on ≥ 10 servers in the Fediverse"
+msgstr "Nickname known on ≥ 10 servers in the Fediverse"
+
+#: realmember.php:568
+msgid "Nickname known on ≥ 5 servers in the Fediverse"
+msgstr "Nickname known on ≥ 5 servers in the Fediverse"
+
+#: realmember.php:570
+msgid "<em>The maximum value is limited to 100%. Multiple matches add up to the total risk. For keyword checks, the points for <strong>each unique keyword found</strong> are assigned individually — so a note with three different spam keywords yields +75 points (capped at 100).</em>"
+msgstr "<em>The maximum value is limited to 100%. Multiple matches add up to the total risk. For keyword checks, the points for <strong>each unique keyword found</strong> are assigned individually — so a note with three different spam keywords yields +75 points (capped at 100).</em>"
+
+#: realmember.php:571
+msgid "🌐 Nickname Frequency in the Fediverse"
+msgstr "🌐 Nickname Frequency in the Fediverse"
+
+#: realmember.php:572
+msgid "Spammers often register the same nickname on many servers in parallel. RealMember therefore counts how often a user's nickname already occurs in your federated contact database (table <code>contact</code>) — i.e., how often Friendica already knows this handle from the Fediverse."
+msgstr "Spammers often register the same nickname on many servers in parallel. RealMember therefore counts how often a user's nickname already occurs in your federated contact database (table <code>contact</code>) — i.e., how often Friendica already knows this handle from the Fediverse."
+
+#: realmember.php:573
+msgid "💡 This check is read-only, does not write anything to the database, and uses only data that Friendica already knows through normal federation."
+msgstr "💡 This check is read-only, does not write anything to the database, and uses only data that Friendica already knows through normal federation."
+
+#: realmember.php:575
+msgid "Critical"
+msgstr "Critical"
+
+#: realmember.php:576
+msgid "Warning"
+msgstr "Warning"
+
+#: realmember.php:577
+msgid "Suspicious"
+msgstr "Suspicious"
+
+#: realmember.php:580
+msgid "🤖 This addon was developed with the support of AI (Claude / Gemini)."
+msgstr "🤖 This addon was developed with the support of AI (Claude / Gemini)."
+
+#: realmember.php:624
+#, php-format
+msgid "System blocked email (Admin rule: %s)"
+msgstr "System blocked email (Admin rule: %s)"
+
+#: realmember.php:635
+#, php-format
+msgid "Suspicious TLD (%s)"
+msgstr "Suspicious TLD (%s)"
+
+#: realmember.php:644
+msgid "Known disposable email provider"
+msgstr "Known disposable email provider"
+
+#: realmember.php:655
+#, php-format
+msgid "Keyword found in note: '%s'"
+msgstr "Keyword found in note: '%s'"
+
+#: realmember.php:661
+#, php-format
+msgid "Keyword found in username: '%s'"
+msgstr "Keyword found in username: '%s'"
+
+#: realmember.php:709
+msgid "Suspicious nickname pattern (bot signature)"
+msgstr "Suspicious nickname pattern (bot signature)"
+
+#: realmember.php:714
+msgid "Suspicious email prefix (bot signature)"
+msgstr "Suspicious email prefix (bot signature)"
+
+#: realmember.php:763
+#, php-format
+msgid "Nickname known on %d other servers (very suspicious)"
+msgstr "Nickname known on %d other servers (very suspicious)"
+
+#: realmember.php:766
+#, php-format
+msgid "Nickname known on %d other servers (suspicious)"
+msgstr "Nickname known on %d other servers (suspicious)"
+
+#: realmember.php:769
+#, php-format
+msgid "Nickname known on %d other servers"
+msgstr "Nickname known on %d other servers"

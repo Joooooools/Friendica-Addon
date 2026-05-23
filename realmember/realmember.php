@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Name: RealMember
  * Description: Advanced read-only spam detection for site administrators.
- * Version: 1.1
+ * Version: 1.2
  * Author: Jools <https://friendica.de/profile/jools>
  * License: AGPL-3.0-or-later
- * 
+ *
  * SPDX-FileCopyrightText: 2026 [Jools]
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
@@ -61,7 +62,7 @@ function realmember_moderation_mod_init()
 	DI::page()['aside'] .= Renderer::replaceMacros($t, [
 		'$url' => DI::baseUrl() . '/realmember',
 		'$header' => 'RealMember',
-		'$label' => DI::l10n()->t('Spam-Analyse'),
+		'$label' => DI::l10n()->t('Spam Analysis'),
 	]);
 }
 
@@ -74,7 +75,7 @@ function realmember_users_tabs(array &$arr)
 		'label' => 'RealMember',
 		'url' => 'realmember',
 		'sel' => (($arr['selectedTab'] ?? '') == 'realmember' ? 'active' : ''),
-		'title' => DI::l10n()->t('Spam-Analyse Dashboard'),
+		'title' => DI::l10n()->t('Spam Analysis Dashboard'),
 		'id' => 'admin-users-realmember',
 		'accesskey' => 's',
 	];
@@ -103,20 +104,52 @@ function realmember_get_criteria()
 	// Each entry MUST start with '.' so str_ends_with() anchors on a real DNS
 	// label boundary (otherwise '.co' would falsely match 'something.co.uk').
 	$bad_tlds = [
-		'.accountant', '.beauty', '.best', '.bid', '.buzz', '.cf', '.click',
-		'.date', '.faith', '.fit', '.fun', '.ga', '.gq', '.icu', '.live',
-		'.loan', '.ml', '.monster', '.mov', '.ninja', '.online', '.pw',
-		'.quest', '.racing', '.rest', '.review', '.shop', '.site', '.space',
-		'.stream', '.surf', '.tk', '.top', '.win', '.work', '.xyz', '.zip'
+		'.accountant',
+		'.beauty',
+		'.best',
+		'.bid',
+		'.buzz',
+		'.cf',
+		'.click',
+		'.date',
+		'.faith',
+		'.fit',
+		'.fun',
+		'.ga',
+		'.gq',
+		'.icu',
+		'.live',
+		'.loan',
+		'.ml',
+		'.monster',
+		'.mov',
+		'.ninja',
+		'.online',
+		'.pw',
+		'.quest',
+		'.racing',
+		'.rest',
+		'.review',
+		'.shop',
+		'.site',
+		'.space',
+		'.stream',
+		'.surf',
+		'.tk',
+		'.top',
+		'.win',
+		'.work',
+		'.xyz',
+		'.zip'
 	];
 	// Drop any entry without a leading dot (defensive against future edits).
-	$bad_tlds = array_values(array_filter($bad_tlds, fn($tld) => str_starts_with($tld, '.')));
+	$bad_tlds = array_values(array_filter($bad_tlds, fn ($tld) => str_starts_with($tld, '.')));
 
 	return [
 		'bad_tlds' => $bad_tlds,
 		'disposable_count' => $disc_count,
 		'is_updated' => file_exists(__DIR__ . '/data/last_update.txt'),
-		'last_update' => file_exists(__DIR__ . '/data/last_update.txt') ? file_get_contents(__DIR__ . '/data/last_update.txt') : 'Nie (Statisch)',
+		'last_update' => file_exists(__DIR__ . '/data/last_update.txt') ? htmlspecialchars(file_get_contents(__DIR__ . '/data/last_update.txt'), ENT_QUOTES, 'UTF-8') : DI::l10n()->t('Never (Static)'),
 		// realpath() returns false if the file is missing/unreadable; fall back
 		// so the cron command shown in the UI is never an empty string.
 		'updater_path' => realpath(__DIR__ . '/scripts/update_domains.php') ?: __DIR__ . '/scripts/update_domains.php',
@@ -147,8 +180,8 @@ function realmember_content()
 	// keeps unvalidated input out of the template's hidden form fields and
 	// link href attributes.
 	$allowed_filters = ['all', 'recent', 'new', 'pending', 'spam'];
-	$allowed_sorts   = ['name', 'email', 'date', 'score'];
-	$allowed_dirs    = ['asc', 'desc'];
+	$allowed_sorts = ['name', 'email', 'date', 'score'];
+	$allowed_dirs = ['asc', 'desc'];
 
 	$filter = $_GET['filter'] ?? 'all';
 	if (!in_array($filter, $allowed_filters, true)) {
@@ -183,7 +216,7 @@ function realmember_content()
 	// /u flag enables Unicode-aware boundaries for multi-byte characters.
 	$keyword_pattern = null;
 	if (!empty($criteria['keywords'])) {
-		$escaped = array_map(fn($k) => preg_quote($k, '/'), $criteria['keywords']);
+		$escaped = array_map(fn ($k) => preg_quote($k, '/'), $criteria['keywords']);
 		$keyword_pattern = '/\b(' . implode('|', $escaped) . ')\b/iu';
 	}
 
@@ -275,7 +308,7 @@ function realmember_content()
 	DI::page()['aside'] .= Renderer::replaceMacros($realmember_menu_tpl, [
 		'$url' => DI::baseUrl() . '/realmember',
 		'$header' => 'RealMember',
-		'$label' => DI::l10n()->t('Spam-Analyse'),
+		'$label' => DI::l10n()->t('Spam Analysis'),
 	]);
 
 	$aside_tpl = Renderer::getMarkupTemplate('moderation/aside.tpl');
@@ -431,7 +464,7 @@ function realmember_content()
 
 	$t = Renderer::getMarkupTemplate('realmember.tpl', 'addon/realmember/');
 	return $tabs_html . Renderer::replaceMacros($t, [
-		'$title' => 'RealMember Spam-Analyse',
+		'$title' => DI::l10n()->t('RealMember Spam Analysis'),
 		'$users' => $results,
 		'$filter' => $filter,
 		'$search' => $search,
@@ -440,6 +473,111 @@ function realmember_content()
 		'$total' => $total,
 		'$criteria' => $criteria,
 		'$pager' => $pager->renderFull($total),
+
+		// Translation strings
+		'$txt_analyzed_accounts' => DI::l10n()->t('Analyzed accounts: %d', $total),
+		'$txt_header_notice' => DI::l10n()->t('ℹ️ RealMember is an <strong>automated assistance system</strong> based on heuristics. A high risk score is a strong indicator, but not proof. The final decision about an account should <strong>always</strong> be made manually.'),
+		'$txt_filter_recent' => DI::l10n()->t('Last 48h'),
+		'$txt_filter_new' => DI::l10n()->t('Last 30 days'),
+		'$txt_filter_pending' => DI::l10n()->t('Pending / Unverified'),
+		'$txt_filter_all' => DI::l10n()->t('All users'),
+		'$txt_filter_spam' => DI::l10n()->t('Suspected spam'),
+		'$txt_search_placeholder' => DI::l10n()->t('Email, name or handle...'),
+		'$txt_search_btn' => DI::l10n()->t('Search'),
+		'$txt_clear_search' => DI::l10n()->t('Clear search'),
+		'$txt_sort_by' => DI::l10n()->t('Sort by:'),
+		'$txt_sort_date' => DI::l10n()->t('Date'),
+		'$txt_sort_name' => DI::l10n()->t('Name'),
+		'$txt_sort_email' => DI::l10n()->t('Email'),
+		'$txt_sort_score' => DI::l10n()->t('Risk'),
+		'$txt_th_risk' => DI::l10n()->t('Risk'),
+		'$txt_th_user' => DI::l10n()->t('User'),
+		'$txt_th_contact' => DI::l10n()->t('Email address / Registered'),
+		'$txt_badge_deleted' => DI::l10n()->t('DELETED'),
+		'$txt_note_title' => DI::l10n()->t('Registration Note'),
+		'$txt_view_profile' => DI::l10n()->t('View profile'),
+		'$txt_analysis_results' => DI::l10n()->t('Analysis results:'),
+		'$txt_no_reasons' => DI::l10n()->t('No suspicious patterns found.'),
+		'$txt_no_results' => DI::l10n()->t('No users found matching the filter criteria.'),
+
+		// What is RealMember
+		'$txt_what_can_realmember' => DI::l10n()->t('📖 What can RealMember do?'),
+		'$txt_can_do' => DI::l10n()->t('✅ What RealMember can do'),
+		'$txt_desc_risk' => DI::l10n()->t('<strong>Risk assessment of all users:</strong> Every registered account is automatically analyzed based on multiple criteria and receives a risk score from 0% to 100%.'),
+		'$txt_desc_disposable' => DI::l10n()->t('<strong>Disposable email detection:</strong> Email addresses are checked against a community-maintained list of thousands of known disposable providers.'),
+		'$txt_desc_domains' => DI::l10n()->t('<strong>Detect suspicious domains:</strong> Domain extensions (TLDs) commonly abused for spam are automatically detected.'),
+		'$txt_desc_keywords' => DI::l10n()->t('<strong>Keyword scan:</strong> Usernames and registration notes are searched for almost 200 suspicious terms from the fields of pharma, crypto, erotics, and marketing.'),
+		'$txt_desc_entropy' => DI::l10n()->t('<strong>Bot detection (entropy):</strong> Randomly generated nicknames and email prefixes without natural word structure are detected using pattern analysis.'),
+		'$txt_desc_admin_rules' => DI::l10n()->t('<strong>Include admin rules:</strong> Your own email blocklists from Friendica settings are automatically included in the assessment.'),
+		'$txt_desc_filters' => DI::l10n()->t('<strong>Filtering & Sorting:</strong> You can filter and sort results by time period, suspected spam, name, email, or risk score.'),
+		'$txt_desc_search' => DI::l10n()->t('<strong>Search:</strong> A full-text search across names, handles, and email addresses is integrated.'),
+		'$txt_desc_updates' => DI::l10n()->t('<strong>Automatic updates:</strong> The disposable domain list can be automatically updated daily via a cron job.'),
+		'$txt_desc_integration' => DI::l10n()->t('<strong>Seamless integration:</strong> RealMember appears as a tab in Friendica moderation and blends seamlessly into the existing interface.'),
+
+		'$txt_safety_guarantee' => DI::l10n()->t('🔒 Security Guarantee'),
+		'$txt_desc_read_only' => DI::l10n()->t('<strong>Read-only:</strong> RealMember exclusively reads data. No database entries are created, modified, or deleted.'),
+		'$txt_desc_no_auto' => DI::l10n()->t('<strong>No automated actions:</strong> RealMember never blocks, deletes, or modifies any account automatically. All decisions are made by the admin.'),
+		'$txt_desc_admin_only' => DI::l10n()->t('<strong>Only for admins:</strong> The dashboard is only visible to site administrators.'),
+
+		'$txt_cannot_do' => DI::l10n()->t('⚠️ What RealMember cannot do'),
+		'$txt_desc_no_guarantee' => DI::l10n()->t('<strong>No guarantee:</strong> RealMember is an assistance system. Not every flagged account is actually spam, and not every spammer will be detected.'),
+		'$txt_desc_no_content_scan' => DI::l10n()->t('<strong>No content scan:</strong> Published posts, comments, or messages of users are not analyzed.'),
+		'$txt_desc_no_realtime' => DI::l10n()->t('<strong>No real-time monitoring:</strong> The analysis runs on every page load. There are no push notifications for new suspected spam cases.'),
+		'$txt_desc_no_delete' => DI::l10n()->t('<strong>No deletion or blocking:</strong> RealMember cannot block or delete accounts. Use Friendica\'s moderation area for this.'),
+
+		// Setup & Maintenance
+		'$txt_setup_maintenance' => DI::l10n()->t('🛠️ Setup & Maintenance'),
+		'$txt_cron_updates' => DI::l10n()->t('📅 Automatic Updates via Cron Job'),
+		'$txt_disposable_desc' => DI::l10n()->t('RealMember uses a list of known disposable email providers. This list can be updated manually or automatically via a cron job.'),
+		'$txt_cron_entry' => DI::l10n()->t('Cron job entry for your system drive:'),
+		'$txt_cron_hint' => DI::l10n()->t('This command updates the list every day at 03:00 at night.'),
+		'$txt_data_source_license' => DI::l10n()->t('<strong>Data Source:</strong> <a href="%s" target="_blank" rel="noopener nofollow noreferrer">disposable-email-domains</a> on GitHub · <strong>License:</strong> <a href="%s" target="_blank" rel="noopener nofollow noreferrer">CC0 1.0 (Public Domain)</a>', 'https://github.com/disposable-email-domains/disposable-email-domains', 'https://creativecommons.org/publicdomain/zero/1.0/'),
+		'$txt_manual_update' => DI::l10n()->t('🚀 Manual Update'),
+		'$txt_manual_desc' => DI::l10n()->t('A cron job is not mandatory! Alternatively, the update script can simply be run manually in the terminal once as needed to download the list from GitHub:'),
+		'$txt_safety_notice' => DI::l10n()->t('<strong>⚠️ Safety Notice:</strong> The update script accesses external content directly from GitHub. Only use the automated cron job if you trust this data source. Otherwise, the list can of course also be entered by hand.'),
+
+		// Analysis Criteria & Scoring
+		'$txt_criteria_scoring' => DI::l10n()->t('🔍 Analysis Criteria & Scoring'),
+		'$txt_your_admin_rules' => DI::l10n()->t('🛡️ Your Admin Rules'),
+		'$txt_admin_rules_desc' => DI::l10n()->t('RealMember reads the email blocklist from your Friendica settings (<code>disallowed_email</code>). Currently, <strong>%d rules</strong> are stored there.', $criteria['manual_count']),
+		'$txt_admin_rules_match' => DI::l10n()->t('If a user\'s email address exactly matches one of these rules, the risk score is immediately set to <strong>100% (Critical)</strong>.'),
+		'$txt_admin_rules_hint' => DI::l10n()->t('💡 You can find this setting under: <strong>Administration</strong> → <strong>Registration</strong> → <strong>Disallowed email domains</strong>'),
+		'$txt_disposable_detect' => DI::l10n()->t('📧 Disposable Email Detection'),
+		'$txt_disposable_detect_desc' => DI::l10n()->t('RealMember checks every email address against a %s with currently <strong>%d known providers</strong>.', ($criteria['is_updated'] ? DI::l10n()->t('automatically updated community blocklist') : DI::l10n()->t('bundled basic blocklist')), $criteria['disposable_count']),
+		'$txt_last_update' => DI::l10n()->t('Last update: <code>%s</code>', $criteria['last_update']),
+		'$txt_source_license' => DI::l10n()->t('<strong>Source:</strong> <a href="%s" target="_blank" rel="noopener">disposable-email-domains (GitHub)</a> · <strong>License:</strong> <a href="%s" target="_blank" rel="noopener">CC0 1.0 (Public Domain)</a>', 'https://github.com/disposable-email-domains/disposable-email-domains', 'https://creativecommons.org/publicdomain/zero/1.0/'),
+		'$txt_suspicious_tlds' => DI::l10n()->t('🌐 Suspicious Top-Level Domains'),
+		'$txt_suspicious_tlds_desc' => DI::l10n()->t('Certain domain extensions are used disproportionately often for spam registrations. RealMember monitors the following TLDs:'),
+		'$txt_keyword_detection' => DI::l10n()->t('🔤 Keyword Detection'),
+		'$txt_keyword_detection_desc' => DI::l10n()->t('RealMember searches usernames and registration notes for <strong>%d suspicious terms</strong> from the fields of pharma, crypto, erotics, finance, and marketing.', $criteria['keywords_count']),
+		'$txt_pattern_analysis' => DI::l10n()->t('🧠 Pattern Analysis (Entropy)'),
+		'$txt_pattern_analysis_desc' => DI::l10n()->t('Spam bots often use randomly generated nicknames like <code>zxyprt882</code> that have no natural word structure. RealMember detects such patterns by analyzing the ratio of vowels to consonants.'),
+		'$txt_points_distribution' => DI::l10n()->t('📊 Points Distribution'),
+		'$txt_points_distribution_desc' => DI::l10n()->t('Each criterion assigns a specific number of points. The sum yields the user\'s risk score:'),
+		'$txt_th_criterion' => DI::l10n()->t('Criterion'),
+		'$txt_th_points' => DI::l10n()->t('Points'),
+		'$txt_th_level' => DI::l10n()->t('Level'),
+		'$txt_row_admin_list' => DI::l10n()->t('Admin blocklist (<code>disallowed_email</code>)'),
+		'$txt_row_disposable' => DI::l10n()->t('Disposable email provider'),
+		'$txt_row_tld' => DI::l10n()->t('Suspicious Top-Level Domain'),
+		'$txt_row_keyword_note' => DI::l10n()->t('Spam keyword in the registration note <small>(per unique match)</small>'),
+		'$txt_row_keyword_user' => DI::l10n()->t('Spam keyword in the username <small>(per unique match)</small>'),
+		'$txt_row_entropy' => DI::l10n()->t('Suspicious name pattern (entropy)'),
+		'$txt_row_fediverse_30' => DI::l10n()->t('Nickname known on ≥ 30 servers in the Fediverse'),
+		'$txt_row_fediverse_10' => DI::l10n()->t('Nickname known on ≥ 10 servers in the Fediverse'),
+		'$txt_row_fediverse_5' => DI::l10n()->t('Nickname known on ≥ 5 servers in the Fediverse'),
+
+		'$txt_points_note' => DI::l10n()->t('<em>The maximum value is limited to 100%. Multiple matches add up to the total risk. For keyword checks, the points for <strong>each unique keyword found</strong> are assigned individually — so a note with three different spam keywords yields +75 points (capped at 100).</em>'),
+		'$txt_fediverse_frequency' => DI::l10n()->t('🌐 Nickname Frequency in the Fediverse'),
+		'$txt_fediverse_frequency_desc' => DI::l10n()->t('Spammers often register the same nickname on many servers in parallel. RealMember therefore counts how often a user\'s nickname already occurs in your federated contact database (table <code>contact</code>) — i.e., how often Friendica already knows this handle from the Fediverse.'),
+		'$txt_fediverse_frequency_hint' => DI::l10n()->t('💡 This check is read-only, does not write anything to the database, and uses only data that Friendica already knows through normal federation.'),
+
+		'$txt_level_critical' => DI::l10n()->t('Critical'),
+		'$txt_level_warning' => DI::l10n()->t('Warning'),
+		'$txt_level_suspicious' => DI::l10n()->t('Suspicious'),
+		'$txt_level_info' => DI::l10n()->t('Information'),
+
+		'$txt_footer' => DI::l10n()->t('🤖 This addon was developed with the support of AI (Claude / Gemini).'),
 	]);
 }
 
@@ -483,7 +621,7 @@ function realmember_calculate_risk($user, $criteria, $disposable_domains = [], $
 			}
 			if ($email === $pat || $domain === $pat || str_ends_with($domain, '.' . $pat)) {
 				$score += 100;
-				$reasons[] = "Systemweit gesperrte E-Mail (Admin-Regel: $pat)";
+				$reasons[] = DI::l10n()->t('System blocked email (Admin rule: %s)', $pat);
 				break;
 			}
 		}
@@ -494,7 +632,7 @@ function realmember_calculate_risk($user, $criteria, $disposable_domains = [], $
 		foreach ($criteria['bad_tlds'] as $tld) {
 			if (str_ends_with($domain, $tld)) {
 				$score += 30;
-				$reasons[] = "Verdächtige TLD ($tld)";
+				$reasons[] = DI::l10n()->t('Suspicious TLD (%s)', $tld);
 				break;
 			}
 		}
@@ -503,7 +641,7 @@ function realmember_calculate_risk($user, $criteria, $disposable_domains = [], $
 	// Layer 3: Disposable Domains (uses pre-loaded list)
 	if ($score < 100 && !empty($disposable_domains) && in_array($domain, $disposable_domains)) {
 		$score += 45;
-		$reasons[] = "Bekannter TrashMail-Anbieter";
+		$reasons[] = DI::l10n()->t('Known disposable email provider');
 	}
 
 	// 2. Keyword check (uses pre-built regex for performance)
@@ -514,13 +652,13 @@ function realmember_calculate_risk($user, $criteria, $disposable_domains = [], $
 		if ($note !== '' && preg_match_all($keyword_pattern, $note, $matches)) {
 			foreach (array_unique($matches[0]) as $kw) {
 				$score += 25;
-				$reasons[] = "Keyword in Notiz gefunden: '$kw'";
+				$reasons[] = DI::l10n()->t('Keyword found in note: \'%s\'', $kw);
 			}
 		}
 		if ($username !== '' && preg_match_all($keyword_pattern, $username, $matches)) {
 			foreach (array_unique($matches[0]) as $kw) {
 				$score += 20;
-				$reasons[] = "Keyword im Nutzernamen gefunden: '$kw'";
+				$reasons[] = DI::l10n()->t('Keyword found in username: \'%s\'', $kw);
 			}
 		}
 	}
@@ -568,12 +706,12 @@ function realmember_calculate_risk($user, $criteria, $disposable_domains = [], $
 
 	if ($check_entropy($nickname)) {
 		$score += 20;
-		$reasons[] = "Verdächtiges Nickname-Muster (Bot-Signatur)";
+		$reasons[] = DI::l10n()->t('Suspicious nickname pattern (bot signature)');
 	}
 
 	if ($check_entropy($email_prefix)) {
 		$score += 20;
-		$reasons[] = "Verdächtiges E-Mail-Präfix (Bot-Signatur)";
+		$reasons[] = DI::l10n()->t('Suspicious email prefix (bot signature)');
 	}
 
 	// Layer 4: Federated Nickname Frequency
@@ -586,9 +724,20 @@ function realmember_calculate_risk($user, $criteria, $disposable_domains = [], $
 	// servers earns at most "auffällig" (+25), which is appropriate as a signal.
 	// Only short nicks (<6 chars) and role-based technical nicks are skipped.
 	$technical_nicks = [
-		'support', 'contact', 'webmaster', 'postmaster', 'hostmaster',
-		'moderator', 'administrator', 'friendica', 'noreply', 'no-reply',
-		'feedback', 'newsletter', 'service', 'official'
+		'support',
+		'contact',
+		'webmaster',
+		'postmaster',
+		'hostmaster',
+		'moderator',
+		'administrator',
+		'friendica',
+		'noreply',
+		'no-reply',
+		'feedback',
+		'newsletter',
+		'service',
+		'official'
 	];
 	if (strlen($nickname) >= 6 && !in_array(strtolower($nickname), $technical_nicks, true)) {
 		if (!isset($nickname_count_cache[$nickname])) {
@@ -611,13 +760,13 @@ function realmember_calculate_risk($user, $criteria, $disposable_domains = [], $
 
 		if ($nick_count >= 30) {
 			$score += 25;
-			$reasons[] = "Nickname auf $nick_count anderen Servern bekannt (sehr verdächtig)";
+			$reasons[] = DI::l10n()->t('Nickname known on %d other servers (very suspicious)', $nick_count);
 		} elseif ($nick_count >= 10) {
 			$score += 15;
-			$reasons[] = "Nickname auf $nick_count anderen Servern bekannt (auffällig)";
+			$reasons[] = DI::l10n()->t('Nickname known on %d other servers (suspicious)', $nick_count);
 		} elseif ($nick_count >= 5) {
 			$score += 5;
-			$reasons[] = "Nickname auf $nick_count anderen Servern bekannt";
+			$reasons[] = DI::l10n()->t('Nickname known on %d other servers', $nick_count);
 		}
 	}
 
@@ -630,11 +779,14 @@ function realmember_calculate_risk($user, $criteria, $disposable_domains = [], $
 
 function realmember_get_level($score)
 {
-	if ($score >= 70)
+	if ($score >= 70) {
 		return 'critical';
-	if ($score >= 40)
+	}
+	if ($score >= 40) {
 		return 'warning';
-	if ($score >= 20)
+	}
+	if ($score >= 20) {
 		return 'info';
+	}
 	return 'safe';
 }
