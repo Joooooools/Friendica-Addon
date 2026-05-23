@@ -8,19 +8,19 @@
  */
 (function () {
 
-    // Stabiler Counter für eindeutige Input-IDs – kein Date.now(), kein Kollisionsrisiko
+    // Stable counter for unique input IDs - no Date.now(), no collision risk.
     let _epIdCounter = 0;
 
-    // ReDoS-Schutz: Inputs über dieser Größe werden nicht mehr geparst.
-    // Friendica-Posts sind typischerweise < 10k Zeichen; 100k ist ein großzügiger Sicherheitspuffer.
+    // ReDoS protection: inputs above this size will not be parsed.
+    // Friendica posts are typically < 10k characters; 100k is a generous safety buffer.
     const MAX_PARSE_LENGTH = 100000;
 
-    // WeakMap für State-Speicherung pro Textarea – saubere Isolation,
-    // keine Kollisionen mit anderen Addons, automatische Garbage Collection.
+    // WeakMap for state storage per textarea - clean isolation,
+    // no collisions with other addons, automatic garbage collection.
     const stateMap = new WeakMap();
 
     const findImages = (text) => {
-        // Defensive: zu lange Inputs nicht parsen (ReDoS-Schutz, tempered greedy tokens)
+        // Defensive: do not parse excessively long inputs (ReDoS protection, tempered greedy tokens).
         if (typeof text !== 'string' || text.length > MAX_PARSE_LENGTH) {
             return [];
         }
@@ -29,7 +29,7 @@
         const counts = {};
 
         try {
-            // Pattern 1: Komplex (verlinkt) [url=...][img=...]...[/img][/url]
+            // Pattern 1: Complex (linked) [url=...][img=...]...[/img][/url]
             const pattern1 = /\[url=([^\]]*?)\]\[img=([^\]]*?)\]((?:(?!\[url=|\[img).)*?)\[\/img\]\[\/url\]/gi;
             let match;
             while ((match = pattern1.exec(text)) !== null) {
@@ -48,7 +48,7 @@
                 });
             }
 
-            // Pattern 2: Einfach [img]URL|Desc[/img]
+            // Pattern 2: Simple [img]URL|Desc[/img]
             const pattern2 = /\[img\]((?:(?!\[img).)*?)\[\/img\]/gi;
             while ((match = pattern2.exec(text)) !== null) {
                 const content = match[1];
@@ -85,13 +85,13 @@
                 });
             }
         } catch (e) {
-            // Sicherheitsnetz: bei unerwarteten Regex-Fehlern leeres Ergebnis liefern
-            // statt die UI zu blockieren.
+            // Safety net: return an empty result on unexpected regex errors
+            // instead of blocking the UI.
             console.warn('EasyPhoto: parsing error', e);
             return [];
         }
 
-        // Sortieren und Überlappungen filtern (verhindert Doppelmatches zwischen Pattern 1 und 3)
+        // Sort and filter overlaps (prevents double matches between Pattern 1 and 3).
         const sorted = results.sort((a, b) => a.index - b.index);
         const filtered = [];
         let lastEnd = -1;
@@ -120,8 +120,8 @@
     };
 
     const updateTextarea = (textarea, imgIdentity, newDesc, listContainer) => {
-        // SICHERHEIT: Eckige Klammern entfernen um BBCode-Injection zu verhindern.
-        // Anführungszeichen bleiben – BBCode ist kein HTML, Entities würden wortwörtlich erscheinen.
+        // SECURITY: Remove square brackets to prevent BBCode injection.
+        // Quotes remain - BBCode is not HTML, entities would appear literally.
         const sanitizedDesc = newDesc.replace(/[\[\]]/g, '');
         const currentText = textarea.value;
         const images = getImages(textarea);
@@ -148,7 +148,7 @@
 
             textarea.value = newContent;
 
-            // Cache invalidieren – MUSS vor renderList() passieren
+            // Invalidate cache - MUST happen before renderList().
             const state = stateMap.get(textarea);
             if (state) {
                 state.lastValue = null;
@@ -158,7 +158,7 @@
                 renderList(textarea, listContainer);
             }
 
-            // Standard-Event für Friendica-Core (Zeichenzähler, Vorschau etc.)
+            // Standard event for Friendica core (character counter, preview, etc.).
             textarea.dispatchEvent(new CustomEvent('input', {
                 bubbles: true,
                 detail: { source: 'easyphoto' }
@@ -173,12 +173,11 @@
         }
     };
 
-    // Erlaubte Bild-Endungen für Thumbnail-Anzeige.
-    // Defense-in-depth zusätzlich zur Origin-Prüfung: verhindert, dass z.B.
-    // Endpunkte mit Seiteneffekten als <img src> geladen werden.
-    // SVG bewusst NICHT erlaubt: würde im <img src> zwar nicht ausgeführt,
-    // ist aber als Thumbnail-Format hier ohnehin irrelevant und vermeidet
-    // jede Diskussion um inline-Skripte in SVG-Dateien.
+    // Allowed image extensions for thumbnail display.
+    // Defense-in-depth in addition to origin check: prevents endpoints with
+    // side effects from being loaded as <img src>.
+    // SVG is deliberately NOT allowed: although it would not execute inside <img src>,
+    // it is irrelevant as a thumbnail format here and avoids any discussion about inline scripts in SVGs.
     const IMAGE_EXTENSION_RE = /\.(jpe?g|png|gif|webp|avif|bmp)(\?.*)?$/i;
 
     const isLocal = (url) => {
@@ -195,8 +194,8 @@
         if (!isLocal(url)) return false;
         try {
             const parsed = new URL(url, window.location.origin);
-            // Pfad muss wie ein Bild aussehen – oder Friendica-typische Photo-Pfade
-            // (/photo/, /photos/, /proxy/) zulassen, die oft keine Extension tragen.
+            // Path must look like an image - or allow typical Friendica photo paths
+            // (/photo/, /photos/, /proxy/) which often do not have an extension.
             const path = parsed.pathname;
             if (IMAGE_EXTENSION_RE.test(path)) return true;
             if (/^\/(photo|photos|proxy)\//i.test(path)) return true;
@@ -259,7 +258,7 @@
             const inputContainer = document.createElement('div');
             inputContainer.className = 'ep-input-container';
 
-            // Stabiler Counter statt Date.now() – keine Kollisionen möglich
+            // Stable counter instead of Date.now() - no collisions possible.
             const inputId = `ep-input-${++_epIdCounter}-${i}`;
             const label = document.createElement('label');
             label.htmlFor = inputId;
@@ -303,8 +302,8 @@
 
                 textarea.parentNode.insertBefore(listContainer, textarea.nextSibling);
 
-                // State-Container für dieses Textarea – sauber in WeakMap statt
-                // direkt am DOM-Element.
+                // State container for this textarea - clean in WeakMap instead of
+                // directly on the DOM element.
                 const state = {
                     lastValue: null,
                     lastImages: null,
@@ -322,7 +321,7 @@
                         return;
                     }
 
-                    // SICHTBARKEIT: Optimierung für Performance und position:fixed Dialoge
+                    // VISIBILITY: Optimization for performance and position:fixed dialogs.
                     if (document.hidden || textarea.getBoundingClientRect().width === 0) {
                         return;
                     }
@@ -333,14 +332,14 @@
                     }
                 };
 
-                // Debouncing auf input-Event: verhindert Regex-Läufe bei jedem Tastendruck
+                // Debouncing on input event: prevents regex runs on every keystroke.
                 const debouncedRender = (e) => {
                     if (e && e.detail && e.detail.source === 'easyphoto') return;
                     clearTimeout(state.debounceTimer);
                     state.debounceTimer = setTimeout(safeRender, 300);
                 };
 
-                // Polling-Tick: bei Tab-Wechsel echt pausieren statt nur leer durchzulaufen.
+                // Polling tick: truly pause on tab switch instead of just running empty loops.
                 const startPolling = () => {
                     if (state.intervalId === null) {
                         state.intervalId = setInterval(safeRender, 1500);
@@ -358,7 +357,7 @@
                         stopPolling();
                     } else {
                         startPolling();
-                        // Nach Rückkehr einmal direkt rendern, falls Wert geändert wurde
+                        // Render once directly upon return if the value has changed.
                         safeRender();
                     }
                 };
@@ -395,7 +394,7 @@
 
                 renderList(textarea, listContainer);
 
-                // Polling nur starten, wenn Tab sichtbar – sonst auf visibilitychange warten.
+                // Only start polling if tab is visible - otherwise wait for visibilitychange.
                 if (!document.hidden) {
                     startPolling();
                 }

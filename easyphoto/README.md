@@ -142,18 +142,9 @@ After inserting an image into the editor, a list with the preview images and the
 
 ## Lizenz / License
 
-  
-
-  
-
 GNU Affero General Public License v3.0 (AGPL-3.0-or-later)
 
-
-  
-
 Autor: [Jools](https://friendica.de/profile/jools)
-
-  
 
 Erstellt mit Unterstützung von Gemini und Claude. / Created with Gemini and Claude.
 
