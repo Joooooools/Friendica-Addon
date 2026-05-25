@@ -168,7 +168,7 @@ body {
 
 .nav-item.active {
     background: var(--accent);
-    color: #fff;
+    color: var(--bg);
     font-weight: bold;
 }
 

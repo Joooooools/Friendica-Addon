@@ -38,12 +38,53 @@ PersonalPostExporter ist ein Addon für Friendica. Es ermöglicht Nutzern, ihre 
 -   **Schreibrechte:** Das System benötigt Schreibrechte im temporären Verzeichnis des Systems (für Sperrdateien und die ZIP-Erstellung).
 
 
-## Anmerkung
+---
 
-Dieses Addon wurde mit Gemini / AI Studio und Claude erstellt.
+# PersonalPostExporter for Friendica
 
-## Lizenz
+PersonalPostExporter is an addon for Friendica. It allows users to export their own posts into a portable, locally viewable HTML archive.
 
-Dieses Projekt ist unter der **AGPL-3.0-or-later** lizenziert.
+## Features
 
-Weitere Infos dazu auf [friendica.dev](https://friendica.dev/friendica-addon-personalpostexporter-eigene-posts-als-blog-archiv-exportieren/).
+-   **Self-contained Archive:** Generates a ZIP file containing HTML, CSS, and JavaScript to read posts offline in any web browser.
+
+-   **Chronological Navigation:** Posts are prepared and sorted by years and months.
+
+-   **Full-text Search:** Contains a client-side search function (JavaScript) that allows searching the entire text archive.
+
+-   **Design Options:** Supports a light and dark design for the exported archive.
+
+-   **Resource-friendly:** Features an integrated lock mechanism (mutex) to limit the number of simultaneous exports per instance and prevent server overload.
+
+-   **Privacy:** Respects private posts and marks them clearly in the archive.
+
+
+## Important Notes & Disclaimer
+
+-   **Use at Your Own Risk:** The use of this addon is at the user's own risk and responsibility. The developer assumes no liability for any server instabilities, timeouts, or the completeness of the exported contents.
+
+-   **Not a Technical Backup:** This addon is for viewing and archiving purposes only. The exported data is not formatted for re-import into another Friendica instance.
+
+-   **Media Content:** To keep the file size and server load low, images are **not** copied into the ZIP file. They remain on the server and are only linked in the archive. If the original images on the server are deleted, they will no longer be visible in the archive either.
+
+-   **Exclusions:** Comments, likes, shares (shared content from third parties), and other social interactions are not part of the export.
+
+
+## Requirements
+
+-   **Friendica:** Current version.
+
+-   **PHP Extensions:** zip (required to create the archive).
+
+-   **Write Permissions:** The system requires write permissions in the system's temporary directory (for lock files and ZIP creation).
+
+
+## Lizenz / License
+
+GNU Affero General Public License v3.0 (AGPL-3.0-or-later)
+
+Autor: [Jools](https://friendica.de/profile/jools)
+
+Erstellt mit Unterstützung von Gemini und Claude. / Created with Gemini and Claude.
+
+Weitere Informationen: [friendica.dev](https://friendica.dev)

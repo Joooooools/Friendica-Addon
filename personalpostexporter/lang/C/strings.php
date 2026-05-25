@@ -1,4 +1,5 @@
 <?php
+
 $a->strings[''] = '';
 $a->strings['Personal Post Exporter'] = 'Personal Post Exporter';
 $a->strings['With this exporter, you can download your own archive from your Friendica instance. You will receive a ZIP file containing your posts arranged in a blog-like style. A search function is also included.'] = 'With this exporter, you can download your own archive from your Friendica instance. You will receive a ZIP file containing your posts arranged in a blog-like style. A search function is also included.';
