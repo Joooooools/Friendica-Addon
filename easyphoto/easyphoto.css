@@ -92,3 +92,16 @@
         background: #444;
     }
 }
+
+.ep-footer {
+    text-align: right;
+    font-size: 10px;
+    color: inherit !important;
+    opacity: 0.8;
+    margin-top: 5px;
+    margin-right: 2px;
+    user-select: none;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}

@@ -164,11 +164,15 @@
                 detail: { source: 'easyphoto' }
             }));
 
-            const diff = newTag.length - target.length;
-            if (start > target.index) {
-                textarea.setSelectionRange(start + diff, end + diff);
-            } else {
-                textarea.setSelectionRange(start, end);
+            // WebKit/Safari-Workaround: setSelectionRange on a blurred element automatically focuses it.
+            // We only restore the selection/caret if the main editor textarea is currently focused.
+            if (document.activeElement === textarea) {
+                const diff = newTag.length - target.length;
+                if (start > target.index) {
+                    textarea.setSelectionRange(start + diff, end + diff);
+                } else {
+                    textarea.setSelectionRange(start, end);
+                }
             }
         }
     };
@@ -282,6 +286,11 @@
             row.appendChild(inputContainer);
             listContainer.appendChild(row);
         });
+
+        const footer = document.createElement('div');
+        footer.className = 'ep-footer';
+        footer.textContent = 'Addon: EasyPhoto';
+        listContainer.appendChild(footer);
     };
 
     const init = (addedNodes) => {
