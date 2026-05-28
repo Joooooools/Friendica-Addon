@@ -487,4 +487,4 @@ Erstellt mit Unterstützung von Gemini und Claude. / Created with Gemini and Cla
 
   
 
-Weitere Informationen: [friendica.dev](https://friendica.dev)
+Weitere Informationen: [clip.place](https://clip.place/w/spntB9nEt15hDzCF9zBixh)
