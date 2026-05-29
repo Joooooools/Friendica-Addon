@@ -429,20 +429,10 @@ EasyCompose actively detects the image structures of the EasyPhoto and QuickPhot
 
   
 
-## Lizenz / License
-
-  
-
 GNU Affero General Public License v3.0 (AGPL-3.0-or-later)
 
-  
-
-Autor: Jools
-
-  
+Autor: [Jools](https://friendica.de/profile/jools)
 
 Erstellt mit Unterstützung von Gemini und Claude. / Created with Gemini and Claude.
 
-  
-
-Weitere Informationen: friendica.dev
+Weitere Informationen zu diesem Addon auf [friendica.dev](https://friendica.dev)
