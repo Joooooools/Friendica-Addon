@@ -18,14 +18,31 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: easyphoto.php:38
+#: easyphoto.php:41
+msgid "Conflict detected: both EasyPhoto and QuickPhoto are enabled. EasyPhoto is temporarily inactive to prevent issues. Please disable QuickPhoto if you want to use EasyPhoto."
+msgstr "Conflict detected: both EasyPhoto and QuickPhoto are enabled. EasyPhoto is temporarily inactive to prevent issues. Please disable QuickPhoto if you want to use EasyPhoto."
+
+#: easyphoto.php:55
 msgid "Image"
 msgstr "Image"
 
-#: easyphoto.php:39
+#: easyphoto.php:56
 msgid "Enter image description here..."
 msgstr "Enter image description here..."
 
-#: easyphoto.php:40
+#: easyphoto.php:57
 msgid "External image (privacy protection)"
 msgstr "External image (privacy protection)"
+
+#: easyphoto.php:89
+msgid "Warning"
+msgstr "Warning"
+
+#: easyphoto.php:90
+msgid "The \"QuickPhoto\" addon is also enabled. Both addons cannot be active at the same time. EasyPhoto is temporarily inactive to avoid conflicts. Please deactivate QuickPhoto if you want to use EasyPhoto."
+msgstr "The \"QuickPhoto\" addon is also enabled. Both addons cannot be active at the same time. EasyPhoto is temporarily inactive to avoid conflicts. Please deactivate QuickPhoto if you want to use EasyPhoto."
+
+#: easyphoto.php:95
+msgid "EasyPhoto is ready. No conflicts detected."
+msgstr "EasyPhoto is ready. No conflicts detected."
+

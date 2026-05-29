@@ -11,6 +11,11 @@
     // Stable counter for unique input IDs - no Date.now(), no collision risk.
     let _epIdCounter = 0;
 
+    // Resolve the localization strings injected by the PHP head hook.
+    // Falls back to English defaults if the object is missing for any reason.
+    const L10N = (typeof window !== 'undefined' && window.easyphoto_l10n) ? window.easyphoto_l10n : {};
+    const t = (key, fallback) => (L10N && typeof L10N[key] === 'string') ? L10N[key] : fallback;
+
     // ReDoS protection: inputs above this size will not be parsed.
     // Friendica posts are typically < 10k characters; 100k is a generous safety buffer.
     const MAX_PARSE_LENGTH = 100000;
@@ -18,6 +23,74 @@
     // WeakMap for state storage per textarea - clean isolation,
     // no collisions with other addons, automatic garbage collection.
     const stateMap = new WeakMap();
+
+    // ---------------------------------------------------------------------
+    // Global polling infrastructure.
+    //
+    // Instead of one setInterval + one visibilitychange listener per textarea
+    // (which scales badly on long comment threads), we keep a single shared
+    // tick that iterates over all active textareas, plus a single shared
+    // visibilitychange listener. The active textareas are tracked in a Set of
+    // their state objects. A Set lets us remove a single entry cheaply on
+    // cleanup; we cannot use a WeakSet here because we need to iterate.
+    // ---------------------------------------------------------------------
+    const POLL_INTERVAL_MS = 1500;
+    const activeStates = new Set();
+    let globalIntervalId = null;
+
+    const globalTick = () => {
+        // Defensive: if the tab is hidden we should not be ticking at all,
+        // but guard anyway so a stray tick does no work.
+        if (document.hidden) {
+            return;
+        }
+        activeStates.forEach((state) => {
+            if (typeof state.tick === 'function') {
+                state.tick();
+            }
+        });
+    };
+
+    const startGlobalPolling = () => {
+        if (globalIntervalId === null && activeStates.size > 0 && !document.hidden) {
+            globalIntervalId = setInterval(globalTick, POLL_INTERVAL_MS);
+        }
+    };
+
+    const stopGlobalPolling = () => {
+        if (globalIntervalId !== null) {
+            clearInterval(globalIntervalId);
+            globalIntervalId = null;
+        }
+    };
+
+    const registerState = (state) => {
+        activeStates.add(state);
+        startGlobalPolling();
+    };
+
+    const unregisterState = (state) => {
+        activeStates.delete(state);
+        if (activeStates.size === 0) {
+            stopGlobalPolling();
+        }
+    };
+
+    // Single shared visibilitychange listener for the whole addon.
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            stopGlobalPolling();
+        } else {
+            startGlobalPolling();
+            // On return, render once immediately for every active textarea
+            // in case its value changed while the tab was hidden.
+            activeStates.forEach((state) => {
+                if (typeof state.tick === 'function') {
+                    state.tick();
+                }
+            });
+        }
+    });
 
     const findImages = (text) => {
         // Defensive: do not parse excessively long inputs (ReDoS protection, tempered greedy tokens).
@@ -252,7 +325,7 @@
                 thumb.src = img.img;
             } else {
                 thumb.src = PRIVACY_PLACEHOLDER;
-                const privacyText = (typeof easyphoto_l10n !== 'undefined') ? easyphoto_l10n.privacy : 'External image (privacy protection)';
+                const privacyText = t('privacy', 'External image (privacy protection)');
                 thumb.title = privacyText;
                 thumb.alt = privacyText;
             }
@@ -266,7 +339,7 @@
             const inputId = `ep-input-${++_epIdCounter}-${i}`;
             const label = document.createElement('label');
             label.htmlFor = inputId;
-            const labelText = (typeof easyphoto_l10n !== 'undefined') ? easyphoto_l10n.image : 'Image';
+            const labelText = t('image', 'Image');
             label.textContent = `${labelText} ${i + 1}`;
 
             const input = document.createElement('input');
@@ -274,7 +347,7 @@
             input.className = 'ep-input';
             input.type = 'text';
             input.value = img.desc;
-            const placeholderText = (typeof easyphoto_l10n !== 'undefined') ? easyphoto_l10n.placeholder : 'Enter image description here...';
+            const placeholderText = t('placeholder', 'Enter image description here...');
             input.placeholder = placeholderText;
 
             input.dataset.img = img.img;
@@ -317,9 +390,8 @@
                     lastValue: null,
                     lastImages: null,
                     lastSeenValue: textarea.value,
-                    intervalId: null,
                     debounceTimer: null,
-                    visibilityHandler: null,
+                    tick: null,
                     cleanup: null
                 };
                 stateMap.set(textarea, state);
@@ -341,6 +413,9 @@
                     }
                 };
 
+                // Expose the render function to the global ticker.
+                state.tick = safeRender;
+
                 // Debouncing on input event: prevents regex runs on every keystroke.
                 const debouncedRender = (e) => {
                     if (e && e.detail && e.detail.source === 'easyphoto') return;
@@ -348,36 +423,11 @@
                     state.debounceTimer = setTimeout(safeRender, 300);
                 };
 
-                // Polling tick: truly pause on tab switch instead of just running empty loops.
-                const startPolling = () => {
-                    if (state.intervalId === null) {
-                        state.intervalId = setInterval(safeRender, 1500);
-                    }
-                };
-                const stopPolling = () => {
-                    if (state.intervalId !== null) {
-                        clearInterval(state.intervalId);
-                        state.intervalId = null;
-                    }
-                };
-
-                state.visibilityHandler = () => {
-                    if (document.hidden) {
-                        stopPolling();
-                    } else {
-                        startPolling();
-                        // Render once directly upon return if the value has changed.
-                        safeRender();
-                    }
-                };
-                document.addEventListener('visibilitychange', state.visibilityHandler);
-
+                // Polling is now handled by a single global ticker (see top of
+                // file). We just register/unregister this textarea's state.
                 state.cleanup = () => {
-                    stopPolling();
+                    unregisterState(state);
                     if (state.debounceTimer) clearTimeout(state.debounceTimer);
-                    if (state.visibilityHandler) {
-                        document.removeEventListener('visibilitychange', state.visibilityHandler);
-                    }
                     if (listContainer.parentNode) listContainer.remove();
                     textarea.removeEventListener('input', debouncedRender);
                     textarea.classList.remove('ep-processed');
@@ -403,10 +453,9 @@
 
                 renderList(textarea, listContainer);
 
-                // Only start polling if tab is visible - otherwise wait for visibilitychange.
-                if (!document.hidden) {
-                    startPolling();
-                }
+                // Register with the global ticker (it only runs while the tab
+                // is visible and at least one textarea is active).
+                registerState(state);
             });
         });
     };

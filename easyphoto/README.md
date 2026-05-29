@@ -52,6 +52,11 @@ EasyPhoto ist eine Erweiterung für Friendica, die das Hinzufügen von Bildbesch
 
 2. Aktivierung der Erweiterung im Administrationsbereich der Instanz.
 
+
+## Kompatibilität / Konflikte
+
+- **QuickPhoto:** EasyPhoto ist nicht kompatibel mit dem Addon `QuickPhoto`, da beide Erweiterungen gleichzeitig in den Beitragseditor eingreifen. Um Anzeigefehler und Browser-Konflikte zu vermeiden, besitzt EasyPhoto eine integrierte Schutzfunktion: Sobald `QuickPhoto` aktiv ist, deaktiviert EasyPhoto seine Funktionen temporär. In diesem Fall wird Administrator:innen im Friendica-Adminbereich ein entsprechender Warnhinweis angezeigt.
+
   
   
 
@@ -122,6 +127,11 @@ EasyPhoto is an extension for Friendica that simplifies adding image description
   
 
 2. Activate the extension in the administration area of the instance.
+
+
+## Compatibility / Conflicts
+
+- **QuickPhoto:** EasyPhoto is not compatible with the `QuickPhoto` addon, as both extensions modify the post editor simultaneously. To prevent display errors and browser conflicts, EasyPhoto features a built-in safeguard: as soon as `QuickPhoto` is active, EasyPhoto temporarily disables its features. In this case, site administrators will see a corresponding warning in the Friendica admin area.
 
   
   
