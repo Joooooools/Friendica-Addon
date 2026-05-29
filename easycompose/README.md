@@ -47,9 +47,10 @@ Ein Schreib- und Barrierefreiheits-Assistent für den Friendica-Editor (/compose
 
 **Vorschau**
 
-  
-
 Aktiviert ein Split-Screen-Layout (Editor links, Beitrags-Vorschau rechts), welches ressourcenschonend manuell über die Vorschau-Schaltfläche aktualisiert wird.
+
+**Fokus-Vorschau (inkl. Mobil-Ansicht)**
+Bietet eine bildschirmfüllende Vorschau des Beitrags. Neben der normalen Desktop-Vorschau kann hier eine Vorschau für die mobile Ansicht simuliert werden, um die Darstellung auf Smartphones zu prüfen.
 
   
 
@@ -255,9 +256,10 @@ A collapsible panel located below the editor offers real-time evaluations while 
 
 **Preview**
 
-  
-
 Enables a dynamic split-screen layout with the editor on the left and the rendered post preview on the right, updated manually via the preview button to conserve server resources.
+
+**Focus Preview (incl. Mobile View)**
+Provides a fullscreen preview of the post. In addition to the standard desktop preview, it allows simulating a mobile view to check how the post renders on smartphones.
 
   
 
