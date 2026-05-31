@@ -1,0 +1,666 @@
+/**
+ * RegStats Stylesheet
+ * 
+ * 100% self-contained CSS for the Registration Statistics Dashboard.
+ * Works without external libraries, using CSS variables for theme compatibility.
+ */
+
+#regstats-dashboard {
+	font-family: inherit;
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0;
+	color: inherit;
+}
+
+#regstats-dashboard .regstats-header {
+	margin-bottom: 25px;
+	padding-bottom: 15px;
+	border-bottom: 1px solid rgba(128, 128, 128, 0.15);
+}
+
+#regstats-dashboard .regstats-subtitle {
+	font-size: 1.20rem;
+	opacity: 0.7;
+	margin: 6px 0 0 0;
+	font-weight: normal;
+	line-height: 1.4;
+}
+
+#regstats-dashboard .regstats-title-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 15px;
+}
+
+#regstats-dashboard .regstats-title-row h1 {
+	font-size: 1.85em;
+	font-weight: 700;
+	margin: 0;
+	line-height: 1.2;
+}
+
+#regstats-dashboard .regstats-section-title {
+	font-size: 1.25em;
+	font-weight: 700;
+	margin-top: 20px;
+	margin-bottom: 12px;
+	opacity: 0.85;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+/* --- SUMMARY GRID --- */
+#regstats-dashboard .regstats-card-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: 15px;
+	margin-bottom: 30px;
+}
+
+#regstats-dashboard .regstats-card {
+	background: rgba(128, 128, 128, 0.04);
+	border: 1px solid rgba(128, 128, 128, 0.12);
+	border-radius: 8px;
+	padding: 16px 20px;
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	overflow: visible;
+	transition: all 0.22s ease-in-out;
+}
+
+#regstats-dashboard .regstats-card:hover {
+	transform: translateY(-2px);
+	background: rgba(128, 128, 128, 0.07);
+	border-color: rgba(128, 128, 128, 0.2);
+}
+
+#regstats-dashboard .regstats-card-value {
+	font-size: 2em;
+	font-weight: 700;
+	line-height: 1.1;
+	font-variant-numeric: tabular-nums;
+	margin-bottom: 5px;
+	color: var(--primary-color, #4a90d9);
+}
+
+#regstats-dashboard .regstats-card-label {
+	font-size: 0.95em;
+	font-weight: 600;
+	opacity: 0.7;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+/* --- CHARTS LAYOUT --- */
+#regstats-dashboard .regstats-details-row {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+	gap: 25px;
+	margin-bottom: 30px;
+}
+
+
+
+#regstats-dashboard .regstats-details-card {
+	background: rgba(128, 128, 128, 0.02);
+	border: 1px solid rgba(128, 128, 128, 0.1);
+	border-radius: 10px;
+	padding: 20px;
+}
+
+#regstats-dashboard .regstats-details-card h2 {
+	font-size: 1.2em;
+	font-weight: 700;
+	margin: 0 0 5px 0;
+	padding-bottom: 10px;
+	border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+}
+
+#regstats-dashboard .regstats-card-desc {
+	font-size: 0.85em;
+	opacity: 0.7;
+	line-height: 1.4;
+	margin: 5px 0 20px 0;
+}
+
+/* --- FLEX BAR CHART --- */
+#regstats-dashboard .regstats-chart-container {
+	display: flex;
+	height: 220px;
+	padding: 10px 0 10px 0;
+	position: relative;
+}
+
+#regstats-dashboard .regstats-chart-y-axis {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	width: 35px;
+	font-size: 0.75em;
+	opacity: 0.6;
+	text-align: right;
+	padding-right: 8px;
+	border-right: 1px solid rgba(128, 128, 128, 0.15);
+	font-variant-numeric: tabular-nums;
+}
+
+#regstats-dashboard .regstats-chart-bars {
+	display: flex;
+	flex: 1;
+	justify-content: space-around;
+	align-items: flex-end;
+	padding-left: 10px;
+	height: 100%;
+}
+
+#regstats-dashboard .regstats-chart-bar-wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	height: 100%;
+	justify-content: flex-end;
+	position: relative;
+	flex: 1;
+	max-width: 32px;
+	cursor: pointer;
+}
+
+#regstats-dashboard .regstats-chart-bar-track {
+	width: 65%;
+	height: calc(100% - 20px);
+	background: rgba(128, 128, 128, 0.08);
+	border-radius: 4px 4px 0 0;
+	position: relative;
+	display: flex;
+	align-items: flex-end;
+}
+
+#regstats-dashboard .regstats-chart-bar-fill {
+	width: 100%;
+	background: var(--primary-color, #4a90d9);
+	border-radius: 4px 4px 0 0;
+	transition: background-color 0.2s;
+	animation: regstats-fill-anim 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes regstats-fill-anim {
+	from {
+		height: 0% !important;
+	}
+}
+
+#regstats-dashboard .regstats-chart-bar-wrapper:hover .regstats-chart-bar-fill {
+	background: #357ebd;
+}
+
+#regstats-dashboard .regstats-chart-bar-label {
+	font-size: 0.85em;
+	opacity: 0.65;
+	margin-top: 6px;
+	text-align: center;
+	white-space: nowrap;
+}
+
+/* --- TOOLTIP --- */
+#regstats-dashboard .regstats-chart-bar-tooltip {
+	position: absolute;
+	bottom: 100%;
+	left: 50%;
+	transform: translateX(-50%) translateY(-8px);
+	background: #1e293b;
+	color: #f8fafc;
+	padding: 8px 12px;
+	border-radius: 6px;
+	font-size: 0.95em;
+	line-height: 1.4;
+	white-space: pre;
+	z-index: 10;
+	pointer-events: none;
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.15s, visibility 0.15s;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	text-align: left;
+}
+
+#regstats-dashboard .regstats-chart-bar-wrapper:hover .regstats-chart-bar-tooltip {
+	opacity: 1;
+	visibility: visible;
+}
+
+#regstats-dashboard .regstats-chart-bar-tooltip::after {
+	content: '';
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	transform: translateX(-50%);
+	border-width: 5px;
+	border-style: solid;
+	border-color: #1e293b transparent transparent transparent;
+}
+
+/* --- ACTIONS PANEL --- */
+#regstats-dashboard .regstats-actions-card {
+	background: rgba(128, 128, 128, 0.02);
+	border: 1px solid rgba(128, 128, 128, 0.1);
+	border-radius: 10px;
+	padding: 20px;
+	margin-top: 25px;
+}
+
+#regstats-dashboard .regstats-actions-card h3 {
+	font-size: 1.1em;
+	margin: 0 0 12px 0;
+	font-weight: 700;
+}
+
+#regstats-dashboard .regstats-btn-danger {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 16px;
+	font-size: 0.88em;
+	font-weight: 600;
+	border-radius: 6px;
+	border: 1px solid rgba(217, 83, 79, 0.25);
+	background-color: rgba(217, 83, 79, 0.08);
+	color: #d9534f !important;
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
+}
+
+#regstats-dashboard .regstats-btn-danger:hover {
+	background-color: #d9534f;
+	color: #ffffff !important;
+	border-color: #d9534f;
+}
+
+#regstats-dashboard .regstats-empty-state {
+	padding: 40px 20px;
+	text-align: center;
+	opacity: 0.65;
+	font-style: italic;
+	font-size: 0.95em;
+}
+
+#regstats-dashboard .regstats-card-inactive {
+	opacity: 0.65;
+}
+
+#regstats-dashboard .regstats-badge-inactive {
+	display: block;
+	font-size: 0.85em;
+	font-weight: normal;
+	color: #d9534f;
+	margin-top: 4px;
+	letter-spacing: 0.2px;
+	text-transform: none;
+}
+
+#regstats-dashboard .regstats-info-icon {
+	font-size: 1.1em;
+	opacity: 0.55;
+	margin-left: 5px;
+	vertical-align: middle;
+	color: var(--primary-color, #4a90d9);
+	transition: opacity 0.2s, transform 0.2s;
+	display: inline-block;
+}
+
+#regstats-dashboard .regstats-card:hover .regstats-info-icon {
+	opacity: 0.95;
+	transform: scale(1.15);
+}
+
+#regstats-dashboard .regstats-card-tooltip {
+	position: absolute;
+	bottom: 105%;
+	left: 50%;
+	transform: translateX(-50%) translateY(-5px);
+	background: #1e293b;
+	color: #f8fafc;
+	padding: 8px 12px;
+	border-radius: 6px;
+	font-size: 0.95em;
+	line-height: 1.45;
+	width: 240px;
+	white-space: normal;
+	z-index: 10;
+	pointer-events: none;
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.15s, visibility 0.15s;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+	text-align: center;
+	font-weight: normal;
+	text-transform: none;
+}
+
+#regstats-dashboard .regstats-card:hover .regstats-card-tooltip {
+	opacity: 1;
+	visibility: visible;
+}
+
+#regstats-dashboard .regstats-card-tooltip::after {
+	content: '';
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	transform: translateX(-50%);
+	border-width: 5px;
+	border-style: solid;
+	border-color: #1e293b transparent transparent transparent;
+}
+
+/*
+ * Theme compatibility:
+ * All text colors use 'inherit' or 'currentColor' so the dashboard
+ * automatically adapts to any Friendica theme (light, dark, or future).
+ * Contrast hierarchy is achieved via opacity, not hardcoded hex values.
+ */
+
+/* --- PENDING / ALERT CARD --- */
+#regstats-dashboard .regstats-card--alert {
+	border-color: rgba(217, 153, 34, 0.55);
+	background: rgba(217, 153, 34, 0.06);
+}
+
+#regstats-dashboard .regstats-card--alert .regstats-card-value {
+	color: #d99522;
+}
+
+#regstats-dashboard .regstats-card--alert:hover {
+	border-color: rgba(217, 153, 34, 0.85);
+	background: rgba(217, 153, 34, 0.1);
+}
+
+/* --- CARD LINK (pending card clickable) --- */
+#regstats-dashboard .regstats-card-link {
+	display: flex;
+	flex-direction: column;
+	text-decoration: none;
+	color: inherit;
+	flex: 1;
+}
+
+#regstats-dashboard .regstats-card-link:hover {
+	text-decoration: none;
+	color: inherit;
+}
+
+/* --- BREAKDOWN DETAILS BOX --- */
+#regstats-dashboard .regstats-breakdown-box {
+	margin-top: 25px;
+	padding-top: 20px;
+	border-top: 1px dashed rgba(128, 128, 128, 0.15);
+	animation: regstatsFadeIn 0.3s ease-out;
+}
+
+@keyframes regstatsFadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(5px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+#regstats-dashboard .regstats-breakdown-title {
+	font-size: 1.6rem;
+	font-weight: 700;
+	margin-bottom: 20px;
+	color: var(--primary-color, #4a90d9);
+}
+
+#regstats-dashboard .regstats-breakdown-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 20px;
+}
+
+#regstats-dashboard .regstats-breakdown-section {
+	background: rgba(128, 128, 128, 0.03);
+	border: 1px solid rgba(128, 128, 128, 0.08);
+	border-radius: 8px;
+	padding: 20px;
+}
+
+#regstats-dashboard .regstats-breakdown-section h4 {
+	font-size: 1.3rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 15px;
+	padding-bottom: 10px;
+	border-bottom: 2px solid rgba(128, 128, 128, 0.15);
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+#regstats-dashboard .regstats-breakdown-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 0;
+	font-size: 1.15rem;
+}
+
+#regstats-dashboard .regstats-breakdown-item:not(:last-child) {
+	border-bottom: 1px solid rgba(128, 128, 128, 0.05);
+}
+
+#regstats-dashboard .regstats-breakdown-label {
+	color: inherit;
+	opacity: 0.85;
+	font-weight: 500;
+}
+
+#regstats-dashboard .regstats-breakdown-value {
+	font-weight: 700;
+	font-size: 1.25rem;
+	color: inherit;
+}
+
+/* Make chart bars cursor:pointer to indicate clickability */
+#regstats-dashboard .regstats-chart-bar-wrapper {
+	cursor: pointer;
+	transition: background-color 0.2s;
+}
+
+#regstats-dashboard .regstats-chart-bar-wrapper:hover .regstats-chart-bar-track {
+	background: rgba(128, 128, 128, 0.15);
+}
+
+/* Highlight active bar */
+#regstats-dashboard .regstats-chart-bar-wrapper.active-bar .regstats-chart-bar-fill {
+	background-color: #2563eb !important;
+	box-shadow: 0 0 8px rgba(37, 99, 235, 0.6);
+}
+
+/* ============================================================
+ * RESPONSIVE / MOBILE OPTIMIZATIONS
+ * ============================================================ */
+
+/* --- Tablet (≤ 768px) --- */
+@media (max-width: 768px) {
+	#regstats-dashboard .regstats-card-grid {
+		grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+		gap: 10px;
+	}
+
+	#regstats-dashboard .regstats-details-row {
+		grid-template-columns: 1fr;
+		gap: 20px;
+	}
+
+	#regstats-dashboard .regstats-breakdown-grid {
+		grid-template-columns: 1fr;
+	}
+
+	#regstats-dashboard .regstats-title-row h1 {
+		font-size: 1.5em;
+	}
+
+	#regstats-dashboard .regstats-card-value {
+		font-size: 1.6em;
+	}
+
+	#regstats-dashboard .regstats-card-label {
+		font-size: 0.85em;
+	}
+
+	#regstats-dashboard .regstats-card {
+		padding: 12px 14px;
+	}
+
+	#regstats-dashboard .regstats-breakdown-item {
+		font-size: 1rem;
+	}
+
+	#regstats-dashboard .regstats-breakdown-value {
+		font-size: 1.1rem;
+	}
+
+	#regstats-dashboard .regstats-breakdown-section h4 {
+		font-size: 1.1rem;
+	}
+
+	#regstats-dashboard .regstats-breakdown-title {
+		font-size: 1.3rem;
+	}
+}
+
+/* --- Phone (≤ 480px) --- */
+@media (max-width: 480px) {
+	#regstats-dashboard {
+		padding: 0 5px;
+	}
+
+	#regstats-dashboard .regstats-card-grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 8px;
+	}
+
+	#regstats-dashboard .regstats-card {
+		padding: 10px 12px;
+		overflow: hidden;
+	}
+
+	#regstats-dashboard .regstats-card-value {
+		font-size: 1.4em;
+	}
+
+	#regstats-dashboard .regstats-card-label {
+		font-size: 0.75em;
+		letter-spacing: 0.2px;
+		word-break: break-word;
+		hyphens: auto;
+	}
+
+	#regstats-dashboard .regstats-title-row h1 {
+		font-size: 1.25em;
+	}
+
+	#regstats-dashboard .regstats-subtitle {
+		font-size: 0.9rem;
+	}
+
+	#regstats-dashboard .regstats-section-title {
+		font-size: 1.05em;
+	}
+
+	/* Hide hover tooltips on touch devices — they cause overlap and
+	   are unusable without a mouse. The aria-label remains for
+	   accessibility / screen readers. */
+	#regstats-dashboard .regstats-card-tooltip {
+		display: none !important;
+	}
+
+	#regstats-dashboard .regstats-info-icon {
+		display: none;
+	}
+
+	/* Charts: horizontal scroll with proper minimum width */
+	#regstats-dashboard .regstats-chart-container {
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+		height: 180px;
+	}
+
+	#regstats-dashboard .regstats-chart-bars {
+		min-width: 420px;
+	}
+
+	/* Rotate date labels so they don't overlap */
+	#regstats-dashboard .regstats-chart-bar-label {
+		font-size: 0.7em;
+		transform: rotate(-45deg);
+		transform-origin: top center;
+		white-space: nowrap;
+		margin-top: 4px;
+	}
+
+	/* Hide chart bar hover tooltips on touch */
+	#regstats-dashboard .regstats-chart-bar-tooltip {
+		display: none !important;
+	}
+
+	/* Detail cards */
+	#regstats-dashboard .regstats-details-card {
+		padding: 12px;
+	}
+
+	#regstats-dashboard .regstats-details-card h2 {
+		font-size: 1.05em;
+	}
+
+	/* Breakdown items: ensure value is never cut off */
+	#regstats-dashboard .regstats-breakdown-section {
+		padding: 12px;
+	}
+
+	#regstats-dashboard .regstats-breakdown-item {
+		font-size: 0.9rem;
+		padding: 7px 0;
+		gap: 8px;
+	}
+
+	#regstats-dashboard .regstats-breakdown-label {
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	#regstats-dashboard .regstats-breakdown-value {
+		font-size: 1rem;
+		flex-shrink: 0;
+		text-align: right;
+	}
+
+	#regstats-dashboard .regstats-breakdown-section h4 {
+		font-size: 1rem;
+	}
+
+	#regstats-dashboard .regstats-breakdown-title {
+		font-size: 1.2rem;
+	}
+
+	/* Actions */
+	#regstats-dashboard .regstats-actions-card {
+		padding: 14px;
+	}
+
+	#regstats-dashboard .regstats-btn-danger {
+		width: 100%;
+		justify-content: center;
+		padding: 10px 16px;
+	}
+}

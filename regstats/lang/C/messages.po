@@ -1,0 +1,411 @@
+# ADDON regstats
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica regstats addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-29 23:00+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: regstats.php:570
+msgid "Registration Stats"
+msgstr ""
+
+#: regstats.php:573
+msgid "Registration statistics and blocks"
+msgstr ""
+
+#: regstats.php:591 regstats.php:638
+msgid "Please login to continue."
+msgstr ""
+
+#: regstats.php:627
+msgid "Statistics cleared successfully."
+msgstr ""
+
+#: regstats.php:644
+msgid "You don't have access to administration pages."
+msgstr ""
+
+#: regstats.php:660
+msgid "All"
+msgstr ""
+
+#: regstats.php:663
+msgid "List of all users"
+msgstr ""
+
+#: regstats.php:666
+msgid "Active"
+msgstr ""
+
+#: regstats.php:669
+msgid "List of active accounts"
+msgstr ""
+
+#: regstats.php:672
+msgid "Pending"
+msgstr ""
+
+#: regstats.php:675
+msgid "List of pending registrations"
+msgstr ""
+
+#: regstats.php:678
+msgid "Blocked"
+msgstr ""
+
+#: regstats.php:681
+msgid "List of blocked users"
+msgstr ""
+
+#: regstats.php:684
+msgid "Deleted"
+msgstr ""
+
+#: regstats.php:687
+msgid "List of pending user deletions"
+msgstr ""
+
+#: regstats.php:697
+msgid "More"
+msgstr ""
+
+#: regstats.php:702
+msgid "Information"
+msgstr ""
+
+#: regstats.php:704
+msgid "Overview"
+msgstr ""
+
+#: regstats.php:705
+msgid "Reports"
+msgstr ""
+
+#: regstats.php:709
+msgid "Configuration"
+msgstr ""
+
+#: regstats.php:711
+msgid "Users"
+msgstr ""
+
+#: regstats.php:715
+msgid "Tools"
+msgstr ""
+
+#: regstats.php:717
+msgid "Contact Blocklist"
+msgstr ""
+
+#: regstats.php:718
+msgid "Server Blocklist"
+msgstr ""
+
+#: regstats.php:719
+msgid "Delete Item"
+msgstr ""
+
+#: regstats.php:723
+msgid "Diagnostics"
+msgstr ""
+
+#: regstats.php:725
+msgid "Item Source"
+msgstr ""
+
+#: regstats.php:734
+msgid "Moderation"
+msgstr ""
+
+#: regstats.php:735
+msgid "User registrations waiting for confirmation"
+msgstr ""
+
+#: regstats.php:954 regstats.php:981
+#, php-format
+msgid "%d failures"
+msgstr ""
+
+#: regstats.php:956 regstats.php:983
+#, php-format
+msgid "Core Honeypot: %d"
+msgstr ""
+
+#: regstats.php:957 regstats.php:984
+#, php-format
+msgid "Guardian Honeypot: %d"
+msgstr ""
+
+#: regstats.php:958 regstats.php:985
+#, php-format
+msgid "Captcha failed: %d"
+msgstr ""
+
+#: regstats.php:959 regstats.php:986
+#, php-format
+msgid "Validation failed: %d"
+msgstr ""
+
+#: regstats.php:960 regstats.php:987
+#, php-format
+msgid "Duplicate entries: %d"
+msgstr ""
+
+#: regstats.php:961 regstats.php:988
+#, php-format
+msgid "Blocked nicknames: %d"
+msgstr ""
+
+#: regstats.php:962 regstats.php:989
+#, php-format
+msgid "Blocked emails: %d"
+msgstr ""
+
+#: regstats.php:964 regstats.php:991
+#, php-format
+msgid "Successful Registrations: %d"
+msgstr ""
+
+#: regstats.php:965 regstats.php:992
+#, php-format
+msgid "Open Registrations: %d"
+msgstr ""
+
+#: regstats.php:966 regstats.php:993
+#, php-format
+msgid "With Admin Approval: %d"
+msgstr ""
+
+#: regstats.php:967 regstats.php:994
+#, php-format
+msgid "Imported Accounts: %d"
+msgstr ""
+
+#: regstats.php:968 regstats.php:995
+#, php-format
+msgid "OpenID Registrations: %d"
+msgstr ""
+
+#: regstats.php:969 regstats.php:996
+#, php-format
+msgid "Approved by Admin: %d"
+msgstr ""
+
+#: regstats.php:970 regstats.php:997
+#, php-format
+msgid "Rejected by Admin: %d"
+msgstr ""
+
+#: regstats.php:971 regstats.php:998
+#, php-format
+msgid "Mail Delivery Failed: %d"
+msgstr ""
+
+#: regstats.php:1011
+msgid "Warning: The log directory is not writable. Registration statistics cannot be recorded."
+msgstr ""
+
+#: regstats.php:1024
+msgid "Registration Statistics"
+msgstr ""
+
+#: regstats.php:1026
+msgid "Statistics logging since:"
+msgstr ""
+
+#: regstats.php:1027
+msgid "To protect disk space, older logs are automatically rotated."
+msgstr ""
+
+#: regstats.php:1051
+msgid "Registration Failure Audit"
+msgstr ""
+
+#: regstats.php:1052
+msgid "Summary (All Time)"
+msgstr ""
+
+#: regstats.php:1053
+msgid "Core Honeypot"
+msgstr ""
+
+#: regstats.php:1054
+msgid "Guardian Addon (optional)"
+msgstr ""
+
+#: regstats.php:1055
+msgid "Reg-Captcha Addon (optional)"
+msgstr ""
+
+#: regstats.php:1056
+msgid "Validation Failed"
+msgstr ""
+
+#: regstats.php:1057
+msgid "Duplicate Entry"
+msgstr ""
+
+#: regstats.php:1058
+msgid "Blocked Nickname"
+msgstr ""
+
+#: regstats.php:1059
+msgid "Blocked Email"
+msgstr ""
+
+#: regstats.php:1060
+msgid "Daily Distribution (Last 14 Days)"
+msgstr ""
+
+#: regstats.php:1061
+msgid "Hover over a bar or click on it to view details for that day."
+msgstr ""
+
+#: regstats.php:1062
+msgid "Hourly Distribution"
+msgstr ""
+
+#: regstats.php:1063
+msgid "Hover over a bar or click on it to view details for that hour of the day."
+msgstr ""
+
+#: regstats.php:1064
+#, php-format
+msgid "Details for: %s"
+msgstr ""
+
+#: regstats.php:1065
+msgid "Actions"
+msgstr ""
+
+#: regstats.php:1066
+msgid "Clear Statistics"
+msgstr ""
+
+#: regstats.php:1067
+msgid "Are you sure you want to delete all statistical logs?"
+msgstr ""
+
+#: regstats.php:1068
+msgid "No statistics logged yet."
+msgstr ""
+
+#: regstats.php:1069
+msgid "inactive"
+msgstr ""
+
+#: regstats.php:1072
+msgid "A hidden field in the registration form. Real users do not see it, but spambots automatically fill it out and get blocked."
+msgstr ""
+
+#: regstats.php:1073
+msgid "An additional hidden field generated by the 'Guardian' addon to intercept advanced spambots."
+msgstr ""
+
+#: regstats.php:1074
+msgid "Registration attempts blocked because the spam protection captcha was solved incorrectly or timed out."
+msgstr ""
+
+#: regstats.php:1075
+msgid "Registration attempts rejected due to validation issues (e.g. invalid username format, mismatching email addresses)."
+msgstr ""
+
+#: regstats.php:1076
+msgid "Registration attempts rejected because the username or email address is already registered on this server."
+msgstr ""
+
+#: regstats.php:1077
+msgid "Registration attempts blocked because the nickname is on the blocklist or reserved."
+msgstr ""
+
+#: regstats.php:1078
+msgid "Registration attempts blocked because the email address or domain is disallowed."
+msgstr ""
+
+#: regstats.php:1081
+msgid "Registrations & Moderation"
+msgstr ""
+
+#: regstats.php:1082
+msgid "Total Registrations"
+msgstr ""
+
+#: regstats.php:1083
+msgid "Open Registrations"
+msgstr ""
+
+#: regstats.php:1084
+msgid "With Admin Approval"
+msgstr ""
+
+#: regstats.php:1085
+msgid "Awaiting Approval"
+msgstr ""
+
+#: regstats.php:1086
+msgid "Approved"
+msgstr ""
+
+#: regstats.php:1087
+msgid "Rejected"
+msgstr ""
+
+#: regstats.php:1088
+msgid "Imported Accounts"
+msgstr ""
+
+#: regstats.php:1089
+msgid "OpenID Registrations"
+msgstr ""
+
+#: regstats.php:1090
+msgid "Total successful registrations on this node (all time)."
+msgstr ""
+
+#: regstats.php:1091
+msgid "Registrations that completed immediately because the node had open registration enabled."
+msgstr ""
+
+#: regstats.php:1092
+msgid "Registrations submitted while the node required administrator approval before activation."
+msgstr ""
+
+#: regstats.php:1093
+msgid "Registrations currently waiting for administrator approval. This is a live count from the database."
+msgstr ""
+
+#: regstats.php:1094
+msgid "Pending registrations that were approved by an administrator."
+msgstr ""
+
+#: regstats.php:1095
+msgid "Pending registrations that were denied/rejected by an administrator."
+msgstr ""
+
+#: regstats.php:1096
+msgid "Registrations that were account migrations from other Fediverse instances."
+msgstr ""
+
+#: regstats.php:1097
+msgid "Registrations that used an OpenID identity for authentication."
+msgstr ""
+
+#: regstats.php:1098
+msgid "Mail Send Failed"
+msgstr ""
+
+#: regstats.php:1099
+msgid "The welcome or password email could not be sent to the user after successful registration."
+msgstr ""
