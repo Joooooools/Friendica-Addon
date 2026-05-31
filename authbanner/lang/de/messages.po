@@ -21,6 +21,38 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: authbanner.php:53
+#: authbanner.php:60
 msgid "Profile banner"
 msgstr "Profilbanner"
+
+#: authbanner.php:27
+msgid "Conflict detected: both AuthBanner and CoverPhoto are enabled. AuthBanner is temporarily inactive to prevent issues. Please disable CoverPhoto if you want to use AuthBanner."
+msgstr "Konflikt erkannt: Sowohl AuthBanner als auch CoverPhoto sind aktiviert. AuthBanner ist vorübergehend inaktiv, um Probleme zu vermeiden. Bitte deaktiviere CoverPhoto, falls du AuthBanner nutzen möchtest."
+
+#: authbanner.php:69
+msgid "Warning"
+msgstr "Achtung"
+
+#: authbanner.php:70
+msgid "The \"CoverPhoto\" addon is also enabled. Both addons cannot be active at the same time. AuthBanner is temporarily inactive to avoid conflicts. Please deactivate CoverPhoto if you want to use AuthBanner."
+msgstr "Das Addon „CoverPhoto“ ist ebenfalls aktiviert. Beide Addons können nicht gleichzeitig aktiv sein. AuthBanner ist vorübergehend inaktiv, um Konflikte zu vermeiden. Bitte deaktiviere CoverPhoto, falls du AuthBanner nutzen möchtest."
+
+#: authbanner.php:75
+msgid "AuthBanner is ready. No conflicts detected."
+msgstr "AuthBanner ist einsatzbereit. Es wurden keine Konflikte festgestellt."
+
+#: authbanner.php:127
+msgid "Enable AuthBanner"
+msgstr "AuthBanner aktivieren"
+
+#: authbanner.php:129
+msgid "Show the profile banner for logged-in users."
+msgstr "Zeigt das Profilbanner für angemeldete Benutzer an."
+
+#: authbanner.php:131
+msgid "AuthBanner Settings"
+msgstr "AuthBanner Einstellungen"
+
+#: authbanner.php:134
+msgid "This addon displays already existing profile banners (e.g. from Friendica, Mastodon, Bluesky, Sharkey, Calckey, Hubzilla, Tumblr, etc.) on user profiles. To keep it lightweight, this addon does not support uploading banners directly; you can easily upload or change your profile banner using an external client app (like Mona, Tusky, etc.)."
+msgstr "Dieses Addon zeigt bereits vorhandene Profilbanner (z. B. von Friendica, Mastodon, Bluesky, Sharkey, Calckey, Hubzilla, Tumblr etc.) in den Benutzerprofilen an. Um das Addon bewusst schlank zu halten, ist kein direkter Upload möglich; das Hochladen oder Ändern eines eigenen Banners kann unkompliziert über eine externe App (wie Mona, Tusky etc.) erfolgen."
