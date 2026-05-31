@@ -1,0 +1,79 @@
+# German translation for register_success addon.
+# Copyright (C) 2026
+# This file is distributed under the same license as the Friendica register_success addon package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: register_success\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-31 08:30+0200\n"
+"PO-Revision-Date: 2026-05-31 08:30+0200\n"
+"Last-Translator: Admin <admin@friendica-dev.test>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: register_success.php:88
+msgid "Registration Pending"
+msgstr "Registrierung eingereicht"
+
+#: register_success.php:89
+msgid "Thank you for registering!\n\nAs soon as your registration has been approved by the administration, you will receive an email notification. Your login credentials have just been sent via email. Sometimes it takes a few minutes for this email to arrive. Please also check your spam folder."
+msgstr "Vielen Dank für deine Registrierung!\n\nSobald deine Anmeldung von der Administration freigeschaltet wurde, bekommst du eine E-Mail darüber. Deine Zugangsdaten wurden soeben per E-Mail verschickt. Manchmal dauert es ein paar Minuten, bis diese E-Mail bei dir ankommt. Bitte schaue auch in deinen Spam-Ordner nach."
+
+#: register_success.php:91
+msgid "Registration Successful"
+msgstr "Registrierung erfolgreich"
+
+#: register_success.php:92
+msgid "Thank you for registering!\n\nYour login credentials have just been sent via email. Sometimes it takes a few minutes for this email to arrive. Please also check your spam folder."
+msgstr "Vielen Dank für deine Registrierung!\n\nDeine Zugangsdaten wurden soeben per E-Mail verschickt. Manchmal dauert es ein paar Minuten, bis diese E-Mail bei dir ankommt. Bitte schaue auch in deinen Spam-Ordner nach."
+
+#: register_success.php:229
+msgid "Configure the custom messages shown to users after successful registration."
+msgstr "Konfiguriere die eigenen Nachrichten, die Benutzern nach erfolgreicher Registrierung angezeigt werden."
+
+#: register_success.php:191
+msgid "Preview Success Page"
+msgstr "Vorschau der Erfolgsseite"
+
+#: register_success.php:232
+msgid "Open Registration settings"
+msgstr "Einstellungen für offene Registrierungen"
+
+#: register_success.php:233
+msgid "Success Page Title"
+msgstr "Titel der Erfolgsseite"
+
+#: register_success.php:234
+msgid "Success Page Message"
+msgstr "Nachricht der Erfolgsseite"
+
+#: register_success.php:235
+msgid "Approval Required settings"
+msgstr "Einstellungen für Registrierungen mit Zustimmung"
+
+#: register_success.php:236
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: register_success.php:178
+msgid "Go to Login"
+msgstr "Gehe zum Login"
+
+msgid "Current Registration Policy"
+msgstr "Aktuelle Registrierungs-Richtlinie"
+
+msgid "Closed (users cannot register)"
+msgstr "Geschlossen (Benutzer können sich nicht registrieren)"
+
+msgid "Approval Required (using Approval Required settings)"
+msgstr "Zustimmung erforderlich (nutzt Einstellungen für Registrierungen mit Zustimmung)"
+
+msgid "Open Registration (using Open Registration settings)"
+msgstr "Offene Registrierung (nutzt Einstellungen für offene Registrierungen)"
+
+msgid "Unknown"
+msgstr "Unbekannt"

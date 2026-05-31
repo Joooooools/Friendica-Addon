@@ -1,0 +1,66 @@
+# ADDON register_success
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica register_success addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-31 08:30+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: register_success.php:88
+msgid "Registration Pending"
+msgstr ""
+
+#: register_success.php:89
+msgid "Thank you for registering!\n\nAs soon as your registration has been approved by the administration, you will receive an email notification. Your login credentials have just been sent via email. Sometimes it takes a few minutes for this email to arrive. Please also check your spam folder."
+msgstr ""
+
+#: register_success.php:91
+msgid "Registration Successful"
+msgstr ""
+
+#: register_success.php:92
+msgid "Thank you for registering!\n\nYour login credentials have just been sent via email. Sometimes it takes a few minutes for this email to arrive. Please also check your spam folder."
+msgstr ""
+
+#: register_success.php:229
+msgid "Configure the custom messages shown to users after successful registration."
+msgstr ""
+
+#: register_success.php:191
+msgid "Preview Success Page"
+msgstr ""
+
+#: register_success.php:232
+msgid "Open Registration settings"
+msgstr ""
+
+#: register_success.php:233
+msgid "Success Page Title"
+msgstr ""
+
+#: register_success.php:234
+msgid "Success Page Message"
+msgstr ""
+
+#: register_success.php:235
+msgid "Approval Required settings"
+msgstr ""
+
+#: register_success.php:236
+msgid "Save Settings"
+msgstr ""
+
+#: register_success.php:178
+msgid "Go to Login"
+msgstr ""
