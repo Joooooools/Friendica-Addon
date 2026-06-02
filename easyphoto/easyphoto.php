@@ -3,7 +3,7 @@
 /**
  * Name: EasyPhoto
  * Description: Adds a simple image description editor below the post textarea for easier accessibility.
- * Version: 1.4
+ * Version: 1.5
  * Author: Jools <https://friendica.de/profile/jools>
  * License: AGPL-3.0-or-later
  *
@@ -14,20 +14,12 @@
 use Friendica\Core\Hook;
 use Friendica\DI;
 
-define('EASYPHOTO_VERSION', '1.4');
-
 function easyphoto_install()
 {
 	// Documented Friendica convention: register stylesheet via the 'head' hook
 	// and deferred script via the 'footer' hook.
 	Hook::register('head', __FILE__, 'easyphoto_head');
 	Hook::register('footer', __FILE__, 'easyphoto_footer');
-}
-
-function easyphoto_uninstall()
-{
-	Hook::unregister('head', __FILE__, 'easyphoto_head');
-	Hook::unregister('footer', __FILE__, 'easyphoto_footer');
 }
 
 /**
@@ -37,7 +29,7 @@ function easyphoto_uninstall()
 function easyphoto_head(string &$b)
 {
 	if (easyphoto_quickphoto_active()) {
-		if (DI::args()->getModuleName() === 'admin' && DI::userSession()->isSiteAdmin()) {
+		if (easyphoto_is_admin_area() && DI::userSession()->isSiteAdmin()) {
 			DI::sysmsg()->addNotice(DI::l10n()->t('Conflict detected: both EasyPhoto and QuickPhoto are enabled. EasyPhoto is temporarily inactive to prevent issues. Please disable QuickPhoto if you want to use EasyPhoto.'));
 		}
 		return;
@@ -49,12 +41,13 @@ function easyphoto_head(string &$b)
 
 	// Register the stylesheet through Friendica's asset system (handles paths,
 	// subfolder installs and cache busting).
-	DI::page()->registerStylesheet(__DIR__ . '/easyphoto.css');
+	$version = DI::addonHelper()->getAddonInfo('easyphoto')->getVersion();
+	DI::page()->registerStylesheet(__DIR__ . '/easyphoto.css?av=' . $version);
 
 	$l10n = [
-		'image'       => DI::l10n()->t('Image'),
+		'image' => DI::l10n()->t('Image'),
 		'placeholder' => DI::l10n()->t('Enter image description here...'),
-		'privacy'     => DI::l10n()->t('External image (privacy protection)'),
+		'privacy' => DI::l10n()->t('External image (privacy protection)'),
 	];
 
 	// JSON_HEX_TAG additionally protects against </script> injection in translation strings.
@@ -77,7 +70,8 @@ function easyphoto_footer(string &$b)
 		return;
 	}
 
-	DI::page()->registerFooterScript(__DIR__ . '/easyphoto.js');
+	$version = DI::addonHelper()->getAddonInfo('easyphoto')->getVersion();
+	DI::page()->registerFooterScript(__DIR__ . '/easyphoto.js?av=' . $version);
 }
 
 /**
@@ -114,6 +108,36 @@ function easyphoto_quickphoto_active(): bool
 		}
 	} catch (\Throwable $e) {
 		// Suppress potential exceptions and assume no conflict to avoid system crashes.
+	}
+
+	return false;
+}
+
+/**
+ * Helper function to safely detect if the current page is an admin page.
+ * Uses fallback methods to prevent Fatal Errors on older Friendica versions.
+ */
+function easyphoto_is_admin_area(): bool
+{
+	try {
+		if (method_exists(DI::class, 'router')) {
+			$router = DI::router();
+			if (method_exists($router, 'getModuleClass')) {
+				$moduleClass = $router->getModuleClass();
+				if (class_exists(\Friendica\Module\BaseAdmin::class) && is_subclass_of($moduleClass, \Friendica\Module\BaseAdmin::class)) {
+					return true;
+				}
+			}
+		}
+
+		if (method_exists(DI::class, 'args')) {
+			$args = DI::args();
+			if (method_exists($args, 'getModuleName')) {
+				return $args->getModuleName() === 'admin';
+			}
+		}
+	} catch (\Throwable $e) {
+		// Suppress potential exceptions to avoid system crashes.
 	}
 
 	return false;
