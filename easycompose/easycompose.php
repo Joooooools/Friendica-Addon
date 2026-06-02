@@ -3,7 +3,7 @@
 /**
  * Name: EasyCompose
  * Description: A privacy-focused, client-side writing and accessibility assistant (optimized for desktop viewports). All analysis is performed locally in the user's browser, with no external services or third-party tracking. Preview rendering utilizes the standard Friendica preview route.
- * Version: 1.0
+ * Version: 1.1
  * Author: Jools <https://friendica.de/profile/jools>
  * License: AGPL-3.0-or-later
  *
@@ -26,16 +26,6 @@ function easycompose_install(): void
 }
 
 /**
- * Unregisters the addon hooks.
- */
-function easycompose_uninstall(): void
-{
-	Hook::unregister('jot_tool', __FILE__, 'easycompose_jot_tool');
-	Hook::unregister('addon_settings', __FILE__, 'easycompose_addon_settings');
-	Hook::unregister('addon_settings_post', __FILE__, 'easycompose_addon_settings_post');
-}
-
-/**
  * Hook callback: Injects client-side assets and localizations into the editor.
  * Only active on the standalone /compose page.
  */
@@ -53,10 +43,9 @@ function easycompose_jot_tool(string &$body): void
 		return;
 	}
 
-	// Register our styles with a reliable cache-buster based on file modification time
-	$css_file = __DIR__ . '/css/easycompose.css';
-	$css_version = file_exists($css_file) ? filemtime($css_file) : '1.0';
-	DI::page()->registerStylesheet(DI::baseUrl() . '/addon/easycompose/css/easycompose.css?v=' . $css_version);
+	// Register our styles using standard local file path with a version suffix for cache busting
+	$version = DI::addonHelper()->getAddonInfo('easycompose')->getVersion();
+	DI::page()->registerStylesheet(__DIR__ . '/css/easycompose.css?av=' . $version);
 
 	// Localized strings passed to client-side JS
 	$l10n = [
@@ -150,13 +139,10 @@ function easycompose_jot_tool(string &$body): void
 		'helpParagraphA11yBody' => DI::l10n()->t('For posts longer than 300 characters, checks whether at least one paragraph break exists. Screen readers and cognitive-accessibility tools benefit greatly from structured text. Short posts are always rated neutral.'),
 	];
 
-	$js_file = __DIR__ . '/easycompose.js';
-	$js_version = file_exists($js_file) ? filemtime($js_file) : '1.0';
-	$js_url = DI::baseUrl() . '/addon/easycompose/easycompose.js?v=' . $js_version;
 	$l10n_json = json_encode($l10n, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
 
-	// Register JS asset using standard Friendica Page API
-	DI::page()->registerFooterScript($js_url);
+	// Register JS asset using standard Friendica Page API with a version suffix for cache busting
+	DI::page()->registerFooterScript(__DIR__ . '/easycompose.js?av=' . $version);
 
 	// Inject toggle button inside the plugin wrapper in the editor toolbar,
 	// and the localization maps alongside the main JS bundle.
@@ -200,7 +186,7 @@ function easycompose_addon_settings(array &$data): void
 	// Note: escaping and HTML structure are handled by settings.tpl (Smarty auto-escape)
 	$compose_url = DI::baseUrl() . '/compose';
 
-	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/easycompose/');
+	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/easycompose');
 	$html = Renderer::replaceMacros($t, [
 		'$enabled' => [
 			'easycompose-enabled',
@@ -232,8 +218,8 @@ function easycompose_addon_settings_post(array &$b): void
 		return;
 	}
 
-	if (!empty($_POST['easycompose-submit'])) {
-		$enabled = !empty($_POST['easycompose-enabled']) ? intval($_POST['easycompose-enabled']) : 0;
+	if (!empty($b['easycompose-submit'])) {
+		$enabled = !empty($b['easycompose-enabled']) ? 1 : 0;
 		if ($enabled) {
 			DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'easycompose', 'disable');
 		} else {
