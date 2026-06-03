@@ -3,7 +3,7 @@
 /**
  * Name: EasyPhoto
  * Description: Adds a simple image description editor below the post textarea for easier accessibility.
- * Version: 1.5
+ * Version: 1.6
  * Author: Jools <https://friendica.de/profile/jools>
  * License: AGPL-3.0-or-later
  *
@@ -16,10 +16,14 @@ use Friendica\DI;
 
 function easyphoto_install()
 {
-	// Documented Friendica convention: register stylesheet via the 'head' hook
-	// and deferred script via the 'footer' hook.
 	Hook::register('head', __FILE__, 'easyphoto_head');
 	Hook::register('footer', __FILE__, 'easyphoto_footer');
+}
+
+function easyphoto_uninstall()
+{
+	Hook::unregister('head', __FILE__, 'easyphoto_head');
+	Hook::unregister('footer', __FILE__, 'easyphoto_footer');
 }
 
 /**

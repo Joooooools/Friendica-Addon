@@ -192,23 +192,37 @@
         return images;
     };
 
+    const sanitizeBbcodeParam = (value) => {
+        return String(value || '').replace(/[\[\]\r\n]/g, '');
+    };
+
     const updateTextarea = (textarea, imgIdentity, newDesc, listContainer) => {
         // SECURITY: Remove square brackets to prevent BBCode injection.
         // Quotes remain - BBCode is not HTML, entities would appear literally.
-        const sanitizedDesc = newDesc.replace(/[\[\]]/g, '');
+        const sanitizedDesc = String(newDesc || '').replace(/[\[\]]/g, '');
         const currentText = textarea.value;
         const images = getImages(textarea);
 
         const target = images.find(img => img.img === imgIdentity.img && img.rank === imgIdentity.rank);
         if (!target) return;
 
+        // SECURITY: Image and URL values can become BBCode parameters in
+        // [img=...] and [url=...]. Remove characters that can break out of
+        // a BBCode parameter or create a new line-based injection surface.
+        const safeImg = sanitizeBbcodeParam(target.img);
+        const safeUrl = sanitizeBbcodeParam(target.url);
+
         let newTag;
         if (target.type === 'complex') {
-            newTag = `[url=${target.url}][img=${target.img}]${sanitizedDesc}[/img][/url]`;
-        } else if (target.type === 'alt_simple') {
-            newTag = `[img=${target.img}]${sanitizedDesc}[/img]`;
+            // Keep the complex/linked image format stable so the surrounding
+            // URL wrapper is preserved even when the description is emptied.
+            newTag = `[url=${safeUrl}][img=${safeImg}]${sanitizedDesc}[/img][/url]`;
         } else {
-            newTag = `[img]${target.img}|${sanitizedDesc}[/img]`;
+            if (sanitizedDesc === '') {
+                newTag = `[img]${safeImg}[/img]`;
+            } else {
+                newTag = `[img=${safeImg}]${sanitizedDesc}[/img]`;
+            }
         }
 
         const newContent = currentText.substring(0, target.index) +
@@ -221,13 +235,18 @@
 
             textarea.value = newContent;
 
-            // Invalidate cache - MUST happen before renderList().
+            // Invalidate parser cache, but do not rebuild the EasyPhoto input list
+            // while the user is typing inside it. Rebuilding would replace the focused
+            // input element and make the cursor jump out after the first character,
+            // especially when [img]URL[/img] is converted to [img=URL]Desc[/img].
             const state = stateMap.get(textarea);
             if (state) {
                 state.lastValue = null;
+                state.lastImages = null;
+                state.lastSeenValue = newContent;
             }
 
-            if (listContainer) {
+            if (listContainer && !listContainer.contains(document.activeElement)) {
                 renderList(textarea, listContainer);
             }
 
