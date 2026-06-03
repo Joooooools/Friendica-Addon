@@ -1639,6 +1639,17 @@
 		runAnalysis(textarea.value);
 		syncPreviewLayout();
 
+		// Re-check shortly after startup so integrations loaded later,
+		// especially EasyPhoto's .ep-list, are detected reliably.
+		[250, 1000].forEach(function (delay) {
+			setTimeout(function () {
+				if (document.body.contains(textarea)) {
+					runAnalysis(textarea.value);
+				}
+			}, delay);
+		});
+
+
 		// If panel was restored as open, start the fallback value watcher immediately
 		if (!panel.classList.contains('collapsed')) {
 			startValuePolling();

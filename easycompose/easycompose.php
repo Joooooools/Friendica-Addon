@@ -3,7 +3,7 @@
 /**
  * Name: EasyCompose
  * Description: A privacy-focused, client-side writing and accessibility assistant (optimized for desktop viewports). All analysis is performed locally in the user's browser, with no external services or third-party tracking. Preview rendering utilizes the standard Friendica preview route.
- * Version: 1.1
+ * Version: 1.2
  * Author: Jools <https://friendica.de/profile/jools>
  * License: AGPL-3.0-or-later
  *
@@ -23,6 +23,13 @@ function easycompose_install(): void
 	Hook::register('jot_tool', __FILE__, 'easycompose_jot_tool');
 	Hook::register('addon_settings', __FILE__, 'easycompose_addon_settings');
 	Hook::register('addon_settings_post', __FILE__, 'easycompose_addon_settings_post');
+}
+
+function easycompose_uninstall(): void
+{
+	Hook::unregister('jot_tool', __FILE__, 'easycompose_jot_tool');
+	Hook::unregister('addon_settings', __FILE__, 'easycompose_addon_settings');
+	Hook::unregister('addon_settings_post', __FILE__, 'easycompose_addon_settings_post');
 }
 
 /**
