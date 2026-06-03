@@ -45,7 +45,7 @@ Das **RegStats**-Addon erfasst und visualisiert Registrierungs-Statistiken anony
 ### Best-Effort Metriken (Technische Einschränkungen)
 
 - **Importierte Konten** – Da Friendica beim Importieren von Profilen keinen direkten Hook bereitstellt, vergleicht das Addon die höchste UID in der Benutzerdatenbank vor und nach der Profilerstellung. Bei stark parallelen Registrierungen kann es hier zu geringfügigen Ungenauigkeiten kommen.
-- **Moderationsaktionen** – Das Addon zählt Moderationsfreigaben und -ablehnungen direkt beim POST-Request der Aktion. Dies geschieht vor dem finalen Datenbank-Commit. In seltenen Ausnahmefällen (z. B. wenn die DB-Transaktion danach fehlschlägt) kann es daher zu Abweichungen kommen.
+- **Moderationsaktionen** – Das Addon registriert Freigaben und Ablehnungen vorläufig und verifiziert deren erfolgreichen Datenbank-Commit mithilfe einer Shutdown-Funktion nach Abschluss der Core-Transaktion. Dies garantiert maximale Datenintegrität ohne Fehlzählungen bei abgebrochenen Aktionen.
 
 ### Installation & Konfiguration
 
@@ -97,7 +97,7 @@ The **RegStats** addon tracks and visualizes registration statistics anonymously
 ### Best-Effort Metrics (Technical Limitations)
 
 - **Imported Accounts** – Since Friendica does not provide a direct hook for account migrations, imports are detected by checking the highest user UID before and after the profile is generated. Under heavy concurrent registration load, this best-effort metric may exhibit minor counting inaccuracies.
-- **Moderation Actions** – Approvals and rejections are counted at the time of the moderation POST request (before the database transaction commit). In rare cases of database commit failures, these counts might deviate slightly.
+- **Moderation Actions** – Approvals and rejections are staged dynamically and verified after the core transaction completes using a shutdown function. This ensures high data integrity by logging events only when database changes are committed.
 
 ### Installation & Configuration
 
