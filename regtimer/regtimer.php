@@ -14,7 +14,6 @@
 use Friendica\DI;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
-use Friendica\Core\System;
 
 /*
  * Registration policy values as used by Friendica core in the 'config'/'register_policy' setting:
@@ -321,10 +320,10 @@ function regtimer_addon_admin_post()
 	// at the same time" (i.e. a severely broken server) at the cost of noticeably less
 	// readable code, so we deliberately keep it simple here.
 	if (!DI::userSession()->getLocalUserId()) {
-		System::externalRedirect(DI::baseUrl() . '/login');
+		DI::baseUrl()->redirect('login');
 	}
 	if (!DI::userSession()->isSiteAdmin()) {
-		System::externalRedirect(DI::baseUrl() . '/network');
+		DI::baseUrl()->redirect('network');
 	}
 
 	$enabled = !empty($_POST['enabled']) ? 1 : 0;
@@ -412,10 +411,10 @@ function regtimer_addon_admin(string &$o)
 	// are intentionally not individually guarded - a logging failure here only affects
 	// this admin page, never the background worker or other addons.
 	if (!DI::userSession()->getLocalUserId()) {
-		System::externalRedirect(DI::baseUrl() . '/login');
+		DI::baseUrl()->redirect('login');
 	}
 	if (!DI::userSession()->isSiteAdmin()) {
-		System::externalRedirect(DI::baseUrl() . '/network');
+		DI::baseUrl()->redirect('network');
 	}
 
 	// Read all config values up front, inside try/catch. get() can throw on a broken
