@@ -863,7 +863,8 @@ function regstats_module(): void
  */
 function regstats_init(): void
 {
-	regstats_add_aside_menu();
+	$placeholder = '';
+	Hook::callAll('moderation_mod_init', $placeholder);
 }
 
 /**
@@ -949,7 +950,6 @@ function regstats_content(): string
 	// Policy that disallows 'unsafe-inline'.
 	DI::page()->registerFooterScript(__DIR__ . '/js/regstats.js?av=' . $version);
 
-	// Generate Moderation Tabs (consistent with core / RealMember)
 	$all_count = DBA::count('user', ["`uid` != ?", 0]);
 	$active_count = DBA::count('user', ["`verified` AND NOT `blocked` AND NOT `account_removed` AND NOT `account_expired` AND `uid` != ?", 0]);
 	$pending_count = \Friendica\Model\Register::getPendingCount();
@@ -997,7 +997,7 @@ function regstats_content(): string
 	$tab_tpl = Renderer::getMarkupTemplate('common_tabs.tpl');
 	$tabs_html = Renderer::replaceMacros($tab_tpl, ['$tabs' => $tabs, '$more' => DI::l10n()->t('More')]);
 
-	// Build the moderation sidebar (same pattern as RealMember / BaseModeration)
+	// Build the moderation sidebar
 	$aside_sub = [
 		'information' => [
 			DI::l10n()->t('Information'),
