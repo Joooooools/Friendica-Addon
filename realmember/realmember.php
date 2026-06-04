@@ -52,7 +52,7 @@ function realmember_uninstall()
 /**
  * Inject RealMember link into moderation sidebar.
  */
-function realmember_moderation_mod_init()
+function realmember_moderation_mod_init(string &$placeholder): void
 {
 	if (!DI::userSession()->isSiteAdmin()) {
 		return;
@@ -69,12 +69,20 @@ function realmember_moderation_mod_init()
 /**
  * Add RealMember tab to moderation users sub-navigation.
  */
-function realmember_users_tabs(array &$arr)
+function realmember_users_tabs(array &$arr): void
 {
+	if (!DI::userSession()->isSiteAdmin()) {
+		return;
+	}
+
+	if (!isset($arr['tabs'])) {
+		$arr['tabs'] = [];
+	}
+
 	$arr['tabs'][] = [
 		'label' => 'RealMember',
-		'url' => 'realmember',
-		'sel' => (($arr['selectedTab'] ?? '') == 'realmember' ? 'active' : ''),
+		'url' => DI::baseUrl() . '/realmember',
+		'sel' => (($arr['selectedTab'] ?? '') === 'realmember' || DI::args()->getCommand() === 'realmember' ? 'active' : ''),
 		'title' => DI::l10n()->t('Spam Analysis Dashboard'),
 		'id' => 'admin-users-realmember',
 		'accesskey' => 's',
@@ -272,7 +280,6 @@ function realmember_content()
 	$tabs_html = Renderer::replaceMacros($tab_tpl, ['$tabs' => $tabs, '$more' => DI::l10n()->t('More')]);
 
 	// Generate Moderation Sidebar (consistent with BaseModeration)
-	// We DO NOT add RealMember here anymore as it is already a Tab!
 	$aside_sub = [
 		'information' => [
 			DI::l10n()->t('Information'),
@@ -303,13 +310,8 @@ function realmember_content()
 		],
 	];
 
-	// Inject RealMember sidebar (same as the hook does on /moderation/* pages)
-	$realmember_menu_tpl = Renderer::getMarkupTemplate('realmember_menu.tpl', 'addon/realmember/');
-	DI::page()['aside'] .= Renderer::replaceMacros($realmember_menu_tpl, [
-		'$url' => DI::baseUrl() . '/realmember',
-		'$header' => 'RealMember',
-		'$label' => DI::l10n()->t('Spam Analysis'),
-	]);
+	$placeholder = '';
+	Hook::callAll('moderation_mod_init', $placeholder);
 
 	$aside_tpl = Renderer::getMarkupTemplate('moderation/aside.tpl');
 	DI::page()['aside'] .= Renderer::replaceMacros($aside_tpl, [
@@ -610,9 +612,8 @@ function realmember_calculate_risk($user, $criteria, $disposable_domains = [], $
 	$domain = $parts[1] ?? '';
 
 	// Layer 1: Manual System Disallowed List (100 Points)
-	// Strict suffix match consistent with Friendica core's disallowed_email
-	// behaviour — NOT fnmatch() with glob patterns (which would surprise admins
-	// entering "example.com" and trigger a divergence from what core blocks).
+	// Checks the configured Friendica disallowed_email entries against the user's email/domain;
+	// note that this addon uses its own matching logic here.
 	if (!empty($criteria['manual_list'])) {
 		foreach ($criteria['manual_list'] as $item) {
 			$pat = strtolower(trim($item));
