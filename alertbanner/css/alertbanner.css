@@ -1,0 +1,143 @@
+/* AlertBanner styles */
+.alertbanner-container {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 32px);
+    max-width: 760px;
+    z-index: 250000;
+    padding: 14px 20px;
+    border-radius: 14px;
+    box-sizing: border-box;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 
+                inset 0 1px 1px rgba(255, 255, 255, 0.15);
+    background: var(--alertbanner-bg, rgba(18, 18, 22, 0.82));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: alertbanner-slide-in 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes alertbanner-slide-in {
+    from {
+        transform: translate(-50%, -120px);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+}
+
+.alertbanner-container.alertbanner-dismissed {
+    transform: translate(-50%, -120px) scale(0.9);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.alertbanner-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 14px;
+}
+
+.alertbanner-text {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--alertbanner-text, #ffffff);
+    line-height: 1.4;
+    flex-grow: 1;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.alertbanner-close {
+    background: none;
+    border: none;
+    color: var(--alertbanner-text, #ffffff);
+    opacity: 0.6;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.alertbanner-close:hover {
+    opacity: 1;
+    transform: scale(1.15);
+}
+
+.alertbanner-close:active {
+    transform: scale(0.95);
+}
+
+.alertbanner-icon {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 10px currentcolor;
+}
+
+/* Style variants */
+.alertbanner-info {
+    border-left: 4px solid hsl(210, 100%, 55%);
+}
+.alertbanner-info .alertbanner-icon {
+    background-color: hsl(210, 100%, 55%);
+    color: hsl(210, 100%, 55%);
+}
+
+.alertbanner-warning {
+    border-left: 4px solid hsl(35, 100%, 55%);
+}
+.alertbanner-warning .alertbanner-icon {
+    background-color: hsl(35, 100%, 55%);
+    color: hsl(35, 100%, 55%);
+}
+
+.alertbanner-danger {
+    border-left: 4px solid hsl(0, 100%, 65%);
+}
+.alertbanner-danger .alertbanner-icon {
+    background-color: hsl(0, 100%, 65%);
+    color: hsl(0, 100%, 65%);
+}
+
+.alertbanner-success {
+    border-left: 4px solid hsl(145, 80%, 50%);
+}
+.alertbanner-success .alertbanner-icon {
+    background-color: hsl(145, 80%, 50%);
+    color: hsl(145, 80%, 50%);
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .alertbanner-container {
+        top: 12px;
+        width: calc(100% - 16px);
+        border-radius: 10px;
+        padding: 10px 14px;
+    }
+    .alertbanner-text {
+        font-size: 13px;
+    }
+}
+
+/* Ensure the banner is hidden behind modal dialog backdrops when they are open */
+body.modal-open .alertbanner-container {
+    z-index: 1000;
+}
