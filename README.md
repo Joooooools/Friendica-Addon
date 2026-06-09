@@ -1,3 +1,9 @@
+> **Hinweis / Notice:** Dieses Repository ist nach Forgejo umgezogen und wird auf GitHub nicht mehr gepflegt.  
+> This repository has moved to Forgejo and is no longer maintained on GitHub.  
+>  
+> **Aktuelle Version / Current version:**  
+> https://git.friendica.dev/Jools/friendica-addons
+
 # Friendica-Addon
 Addons für die Fediverse-Software Friendica
 
